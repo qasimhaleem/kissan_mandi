@@ -1,0 +1,21 @@
+{
+  "name": "kissanmandi",
+  "version": "0.1.0",
+  "description": "Direct farmer-to-buyer marketplace with bidding and recommendations",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test/smoke.js",
+    "reset": "rm -f data/db.json"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "express": "^4.22.3"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
