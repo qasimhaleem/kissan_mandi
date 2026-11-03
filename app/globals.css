@@ -1,0 +1,48 @@
+@import "tailwindcss";
+
+:root {
+  --primary: #8FD19E;
+  --primary-hover: #6DBE82;
+  --cream: #FAF6EA;
+  --white: #FFFFFF;
+  --dark: #2B2B2B;
+}
+
+
+  body {
+    background-color: var(--cream);
+    color: var(--dark);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Noto Nastaliq Urdu", sans-serif;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+
+    /* RTL specific font enhancement for Urdu */
+    [dir="rtl"] {
+      font-family: "Noto Nastaliq Urdu", "Jameel Noori Nastaleeq", Tahoma, Arial, sans-serif;
+      line-height: 1.8;
+    }
+
+
+      /* Strict Design System classes */
+      .bg-cream {
+        background-color: #FAF6EA;
+      }
+
+      .bg-primary-green {
+        background-color: #8FD19E;
+      }
+
+      .hover\:bg-primary-hover:hover {
+        background-color: #6DBE82;
+      }
+
+      .text-dark {
+        color: #2B2B2B;
+      }
+
+      .border-primary-green {
+        border-color: #8FD19E;
+      }
