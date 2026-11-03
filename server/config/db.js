@@ -1,4 +1,12 @@
 const mongoose = require('mongoose');
+const dns = require('dns');
+
+// Fix for querySrv ECONNREFUSED on local ISP / Windows DNS
+try {
+  dns.setServers(['8.8.8.8', '8.8.4.4', '1.1.1.1']);
+} catch (e) {
+  // fallback if system restricts setting custom dns servers
+}
 
 const connectDB = async () => {
   const uri = process.env.MONGODB_URI;
@@ -9,7 +17,7 @@ const connectDB = async () => {
 
   try {
     const conn = await mongoose.connect(uri, {
-      serverSelectionTimeoutMS: 5000,
+      serverSelectionTimeoutMS: 10000,
     });
     console.log(`MongoDB Connected: ${conn.connection.host}`);
   } catch (error) {
@@ -19,4 +27,3 @@ const connectDB = async () => {
 };
 
 module.exports = connectDB;
-
