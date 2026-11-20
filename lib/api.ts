@@ -1,5 +1,8 @@
 export const API_BASE =
-  process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api';
+  process.env.NEXT_PUBLIC_API_URL ||
+  (typeof window !== 'undefined' && !window.location.hostname.includes('localhost')
+    ? 'https://kissanmandi.onrender.com/api'
+    : 'http://localhost:5001/api');
 export const SERVER_BASE = API_BASE.replace(/\/api\/?$/, '');
 
 export interface HealthResponse {
