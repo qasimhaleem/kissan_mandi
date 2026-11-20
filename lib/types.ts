@@ -1,15 +1,37 @@
+export interface FarmerProfile {
+  farmSizeAcres?: number;
+  primaryCrops?: string[];
+  experienceYears?: number;
+  farmAddress?: string;
+  cnic?: string;
+}
+
+export interface BuyerProfile {
+  businessName?: string;
+  buyerType?: 'wholesaler' | 'retailer' | 'exporter' | 'processor' | 'individual';
+  ntnNumber?: string;
+  deliveryAddress?: string;
+}
+
 export interface User {
-  _id: string;
+  _id?: string;
+  id?: string;
   name: string;
   phone: string;
-  role: 'farmer' | 'buyer';
+  email?: string | null;
+  role: 'farmer' | 'buyer' | 'admin';
   district: string;
   language: 'ur' | 'en';
+  status?: 'active' | 'suspended' | 'pending';
+  isVerified?: boolean;
   coordinates: {
     lat: number;
     lng: number;
   };
+  farmerProfile?: FarmerProfile;
+  buyerProfile?: BuyerProfile;
   token?: string;
+  refreshToken?: string;
 }
 
 export interface Listing {
@@ -53,4 +75,3 @@ export interface Bid {
   amount: number;
   createdAt: string;
 }
-

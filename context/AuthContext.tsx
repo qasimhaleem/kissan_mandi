@@ -3,26 +3,29 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User } from '@/lib/types';
 import { useRouter } from 'next/navigation';
+import { API_BASE } from '@/lib/api';
 
 interface AuthContextType {
   user: User | null;
   token: string | null;
   loading: boolean;
-  login: (phone: string, password: string) => Promise<{ success: boolean; message?: string }>;
+  login: (phoneOrEmail: string, password: string) => Promise<{ success: boolean; message?: string }>;
   register: (data: {
     name: string;
     phone: string;
     password: string;
     role: 'farmer' | 'buyer';
+    email?: string;
     district?: string;
     coordinates?: { lat: number; lng: number };
-  }) => Promise<{ success: boolean; message?: string }>;
+    farmerProfile?: any;
+    buyerProfile?: any;
+  }) => Promise<{ success: boolean; message?: string; mockOtp?: string }>;
+  verifyOtp: (phone: string, otp: string) => Promise<{ success: boolean; message?: string }>;
   logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -31,7 +34,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
 
   useEffect(() => {
-    // Hydrate user and token from localStorage
     const savedToken = localStorage.getItem('km_token');
     const savedUser = localStorage.getItem('km_user');
 
@@ -40,39 +42,45 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setToken(savedToken);
         setUser(JSON.parse(savedUser));
       } catch (err) {
-        console.error('Error parsing stored user data:', err);
+        console.error('Error restoring session:', err);
       }
     }
     setLoading(false);
   }, []);
 
-  const login = async (phone: string, password: string) => {
+  const login = async (phoneOrEmail: string, password: string) => {
     try {
       const res = await fetch(`${API_BASE}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone, password }),
+        body: JSON.stringify({ identifier: phoneOrEmail, password }),
       });
 
       const data = await res.json();
-      if (!res.ok) {
-        return { success: false, message: data.message || 'Login failed' };
+      if (!res.ok || !data.success) {
+        return { success: false, message: data.error?.message || data.message || 'Login failed' };
       }
 
-      const userData: User = data.data;
+      const userData: User = data.data.user || data.data;
+      const authToken: string = data.data.token;
+      const refreshToken: string = data.data.refreshToken;
+
       setUser(userData);
-      setToken(userData.token || null);
+      setToken(authToken);
 
-      if (userData.token) {
-        localStorage.setItem('km_token', userData.token);
-      }
+      localStorage.setItem('km_token', authToken);
+      if (refreshToken) localStorage.setItem('km_refresh_token', refreshToken);
       localStorage.setItem('km_user', JSON.stringify(userData));
 
-      // Route according to role
+      // Role-based routing
       if (userData.role === 'farmer') {
         router.push('/farmer');
-      } else {
+      } else if (userData.role === 'buyer') {
         router.push('/buyer');
+      } else if (userData.role === 'admin') {
+        router.push('/admin');
+      } else {
+        router.push('/');
       }
 
       return { success: true };
@@ -90,23 +98,46 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
 
       const data = await res.json();
-      if (!res.ok) {
-        return { success: false, message: data.message || 'Registration failed' };
+      if (!res.ok || !data.success) {
+        return { success: false, message: data.error?.message || data.message || 'Registration failed' };
       }
 
-      const registeredUser: User = data.data;
+      const registeredUser: User = data.data.user || data.data;
+      const authToken: string = data.data.token;
+      const refreshToken: string = data.data.refreshToken;
+
       setUser(registeredUser);
-      setToken(registeredUser.token || null);
+      setToken(authToken);
 
-      if (registeredUser.token) {
-        localStorage.setItem('km_token', registeredUser.token);
-      }
+      localStorage.setItem('km_token', authToken);
+      if (refreshToken) localStorage.setItem('km_refresh_token', refreshToken);
       localStorage.setItem('km_user', JSON.stringify(registeredUser));
 
-      if (registeredUser.role === 'farmer') {
-        router.push('/farmer');
-      } else {
-        router.push('/buyer');
+      return {
+        success: true,
+        mockOtp: data.data.mockVerificationOtp,
+      };
+    } catch (err: any) {
+      return { success: false, message: err.message || 'Network error' };
+    }
+  };
+
+  const verifyOtp = async (phone: string, otp: string) => {
+    try {
+      const res = await fetch(`${API_BASE}/auth/verify-otp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone, otp }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        return { success: false, message: data.error?.message || data.message || 'Verification failed' };
+      }
+
+      if (user) {
+        const updated = { ...user, isVerified: true };
+        setUser(updated);
+        localStorage.setItem('km_user', JSON.stringify(updated));
       }
 
       return { success: true };
@@ -116,15 +147,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const logout = () => {
+    if (token) {
+      fetch(`${API_BASE}/auth/logout`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+      }).catch(() => {});
+    }
     setUser(null);
     setToken(null);
     localStorage.removeItem('km_token');
+    localStorage.removeItem('km_refresh_token');
     localStorage.removeItem('km_user');
     router.push('/login');
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, loading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, token, loading, login, register, verifyOtp, logout }}>
       {children}
     </AuthContext.Provider>
   );
@@ -137,4 +175,3 @@ export function useAuth() {
   }
   return context;
 }
-

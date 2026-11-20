@@ -26,7 +26,12 @@ router.post(
       // Must have exactly 2 images
       let imagePaths = [];
       if (req.files && req.files.length === 2) {
-        imagePaths = req.files.map((file) => `/uploads/${file.filename}`);
+        imagePaths = req.files.map((file) => {
+          if (file.path && (file.path.startsWith('http://') || file.path.startsWith('https://'))) {
+            return file.path;
+          }
+          return `/uploads/${file.filename}`;
+        });
       } else if (req.body.images && Array.isArray(req.body.images) && req.body.images.length === 2) {
         imagePaths = req.body.images; // support JSON array of URLs if sent
       } else {

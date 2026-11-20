@@ -3,82 +3,77 @@ const http = require('http');
 const { Server } = require('socket.io');
 const cors = require('cors');
 const path = require('path');
-require('dotenv').config();
 
-const connectDB = require('./config/db');
+// Ensure .env is resolved relative to server directory
+require('dotenv').config({ path: path.join(__dirname, '.env') });
 
-// Connect to database
+const { connectDB } = require('./config/db');
+const requestLogger = require('./middleware/logger');
+const errorHandler = require('./middleware/errorHandler');
+const AppError = require('./utils/appError');
+
+// Initialize Database Connection
 connectDB();
 
 const app = express();
 const server = http.createServer(app);
 
-// Setup Socket.io
+// Realtime WebSocket Server
 const io = new Server(server, {
   cors: {
     origin: '*',
-    methods: ['GET', 'POST'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
   },
 });
 
 app.set('io', io);
 
 io.on('connection', (socket) => {
-  console.log('Client connected to socket:', socket.id);
-
   socket.on('joinListing', (listingId) => {
     socket.join(listingId);
-    console.log(`Socket ${socket.id} joined listing room: ${listingId}`);
   });
 
   socket.on('leaveListing', (listingId) => {
     socket.leave(listingId);
-    console.log(`Socket ${socket.id} left listing room: ${listingId}`);
-  });
-
-  socket.on('disconnect', () => {
-    console.log('Client disconnected:', socket.id);
   });
 });
 
-// Middlewares
-app.use(cors());
+// Middleware Stack
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL || '*',
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(requestLogger);
 
-// Serve static uploads
+// Static Asset Serving
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Routes
+// Application Routes
+app.use('/api/health', require('./routes/health'));
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/listings', require('./routes/listings'));
+app.use('/api/portals', require('./routes/portals'));
+app.use('/api', require('./routes/portals'));
 app.use('/api', require('./routes/bids'));
 
-// Health check endpoint
-app.get('/api/health', (req, res) => {
-  res.json({
-    status: 'ok',
-    app: 'KissanMandi API',
-    time: new Date(),
+// 404 Route Handler
+app.use((req, res, next) => {
+  next(new AppError(`Endpoint not found: ${req.method} ${req.originalUrl}`, 404, 'NOT_FOUND'));
+});
+
+// Global Error Handler
+app.use(errorHandler);
+
+const PORT = process.env.PORT || 5001;
+
+if (require.main === module) {
+  server.listen(PORT, () => {
+    console.log(`[SERVER] KissanMandi API Server running on port ${PORT}`);
   });
-});
+}
 
-// 404 handler
-app.use((req, res) => {
-  res.status(404).json({ success: false, message: 'API route not found' });
-});
-
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({
-    success: false,
-    message: err.message || 'Internal Server Error',
-  });
-});
-
-const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => {
-  console.log(`KissanMandi Server running on port ${PORT}`);
-});
-
+module.exports = { app, server };

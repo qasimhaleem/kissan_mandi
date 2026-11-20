@@ -6,18 +6,19 @@ import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { Camera, CheckCircle2, ArrowLeft, MapPin } from 'lucide-react';
 import Link from 'next/link';
+import { API_BASE } from '@/lib/api';
 
 const CROPS = [
-  { id: 'Wheat', icon: '🌾' },
-  { id: 'Rice', icon: '🍚' },
-  { id: 'Cotton', icon: '⚪' },
-  { id: 'Sugarcane', icon: '🎋' },
-  { id: 'Maize', icon: '🌽' },
-  { id: 'Potato', icon: '🥔' },
-  { id: 'Onion', icon: '🧅' },
-  { id: 'Tomato', icon: '🍅' },
-  { id: 'Mango', icon: '🥭' },
-  { id: 'Citrus', icon: '🍊' },
+  { id: 'Wheat' },
+  { id: 'Rice' },
+  { id: 'Cotton' },
+  { id: 'Sugarcane' },
+  { id: 'Maize' },
+  { id: 'Potato' },
+  { id: 'Onion' },
+  { id: 'Tomato' },
+  { id: 'Mango' },
+  { id: 'Citrus' },
 ];
 
 const PUNJAB_DISTRICTS = [
@@ -120,7 +121,7 @@ export default function PostProducePage() {
       formData.append('images', photo1);
       formData.append('images', photo2);
 
-      const res = await fetch('http://localhost:5000/api/listings', {
+      const res = await fetch(`${API_BASE}/listings`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -213,7 +214,7 @@ export default function PostProducePage() {
           >
             {CROPS.map((c) => (
               <option key={c.id} value={c.id} className="text-lg">
-                {c.icon} {t(`crops.${c.id}`) || c.id}
+                {t(`crops.${c.id}`) || c.id}
               </option>
             ))}
           </select>
@@ -401,7 +402,7 @@ export default function PostProducePage() {
           disabled={submitting}
           className="w-full py-5 bg-[#8FD19E] hover:bg-[#6DBE82] text-[#2B2B2B] font-black text-2xl rounded-2xl shadow-md transition-all min-h-[64px] flex items-center justify-center cursor-pointer mt-4"
         >
-          {submitting ? t('submitting') : `🚀 ${t('postButton')}`}
+          {submitting ? t('submitting') : t('postButton')}
         </button>
       </form>
     </div>

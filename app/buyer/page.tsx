@@ -6,6 +6,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import { useRouter } from 'next/navigation';
 import { Listing } from '@/lib/types';
 import Link from 'next/link';
+import { API_BASE, resolveImageUrl } from '@/lib/api';
 
 export default function BuyerDashboard() {
   const { user, token, loading } = useAuth();
@@ -28,7 +29,7 @@ export default function BuyerDashboard() {
   const fetchListings = async () => {
     try {
       setFetching(true);
-      const res = await fetch('http://localhost:5000/api/listings');
+      const res = await fetch(`${API_BASE}/listings`);
       const data = await res.json();
       if (data.success) {
         setListings(data.data);
@@ -48,7 +49,7 @@ export default function BuyerDashboard() {
     <div className="space-y-6">
       <div className="bg-white border-2 border-[#8FD19E] rounded-2xl p-6 shadow-sm">
         <h1 className="text-2xl sm:text-3xl font-black text-[#2B2B2B]">
-          {t('welcomeBuyer')}، {user.name}! 🛒
+          {t('welcomeBuyer')}, {user.name}
         </h1>
         <p className="text-gray-600 mt-1 font-medium">
           {t('browseProduce')} — تازہ ترین فصلیں براہِ راست کسانوں سے حاصل کریں
@@ -74,9 +75,7 @@ export default function BuyerDashboard() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {listings.map((item) => {
-            const img1 = item.images[0]?.startsWith('/uploads')
-              ? `http://localhost:5000${item.images[0]}`
-              : item.images[0] || 'https://placehold.co/400x300/8FD19E/ffffff?text=Crop';
+            const img1 = resolveImageUrl(item.images[0]);
 
             return (
               <div

@@ -3,10 +3,11 @@ import './globals.css';
 import { Providers } from './providers';
 import Navbar from '@/components/Navbar';
 import MobileNav from '@/components/MobileNav';
+import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
-  title: 'KissanMandi - Direct Agricultural Marketplace',
-  description: 'Direct crop bidding platform connecting farmers and buyers without middlemen',
+  title: 'KissanMandi - Direct Agricultural Bidding Marketplace',
+  description: 'Direct crop bidding platform connecting farmers and buyers without commission agents (arhtis).',
 };
 
 export default function RootLayout({
@@ -27,9 +28,10 @@ export default function RootLayout({
       <body className="min-h-screen bg-[#FAF6EA] text-[#2B2B2B] flex flex-col pb-16 sm:pb-0">
         <Providers>
           <Navbar />
-          <main className="flex-1 max-w-6xl w-full mx-auto p-4 md:p-6">
+          <main className="flex-1 w-full">
             {children}
           </main>
+          <Footer />
           <MobileNav />
         </Providers>
       </body>

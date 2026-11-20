@@ -6,7 +6,7 @@
     "dev": "npm run build:css && next dev",
     "build:css": "node node_modules/tailwindcss/lib/cli.js -i app/tailwind-input.css -o app/globals.css",
     "watch:css": "node node_modules/tailwindcss/lib/cli.js -i app/tailwind-input.css -o app/globals.css --watch",
-    "build": "npm run build:css && next build",
+    "build": "npm run build:css && next build --webpack",
     "start": "next start",
     "lint": "eslint"
   },

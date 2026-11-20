@@ -7,6 +7,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import { Check, ArrowLeft, Phone, User as UserIcon } from 'lucide-react';
 import Link from 'next/link';
 import { Listing, Bid } from '@/lib/types';
+import { API_BASE } from '@/lib/api';
 
 function FarmerBidsContent() {
   const searchParams = useSearchParams();
@@ -47,7 +48,7 @@ function FarmerBidsContent() {
 
   const fetchMyListings = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/listings/mine', {
+      const res = await fetch(`${API_BASE}/listings/mine`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -65,7 +66,7 @@ function FarmerBidsContent() {
   const fetchBids = async (id: string) => {
     try {
       setFetching(true);
-      const res = await fetch(`http://localhost:5000/api/listings/${id}/bids`, {
+      const res = await fetch(`${API_BASE}/listings/${id}/bids`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -86,7 +87,7 @@ function FarmerBidsContent() {
 
     try {
       const res = await fetch(
-        `http://localhost:5000/api/listings/${selectedListingId}/accept/${bidId}`,
+        `${API_BASE}/listings/${selectedListingId}/accept/${bidId}`,
         {
           method: 'POST',
           headers: { Authorization: `Bearer ${token}` },
@@ -146,7 +147,9 @@ function FarmerBidsContent() {
       {/* Accepted Buyer Details Card */}
       {acceptedBuyer && (
         <div className="bg-green-50 border-2 border-[#8FD19E] p-6 rounded-2xl text-center space-y-3">
-          <div className="text-4xl">🎉</div>
+          <div className="w-14 h-14 rounded-full bg-green-100 flex items-center justify-center mx-auto">
+            <Check className="w-7 h-7 text-green-700" />
+          </div>
           <h3 className="text-2xl font-black text-green-900">
             {t('congratulations')}
           </h3>

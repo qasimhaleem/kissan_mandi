@@ -4,9 +4,10 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
-import { PlusCircle, List, ArrowDownToLine, Clock, Award } from 'lucide-react';
+import { PlusCircle, List, ArrowDownToLine, Clock, Award, Sprout } from 'lucide-react';
 import { Listing } from '@/lib/types';
 import { useRouter } from 'next/navigation';
+import { API_BASE, resolveImageUrl } from '@/lib/api';
 
 export default function FarmerDashboard() {
   const { user, token, loading } = useAuth();
@@ -31,7 +32,7 @@ export default function FarmerDashboard() {
   const fetchListings = async () => {
     try {
       setFetching(true);
-      const res = await fetch('http://localhost:5000/api/listings/mine', {
+      const res = await fetch(`${API_BASE}/listings/mine`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -57,7 +58,7 @@ export default function FarmerDashboard() {
       <div className="bg-white border-2 border-[#8FD19E] rounded-2xl p-6 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-black text-[#2B2B2B]">
-            {t('welcomeFarmer')}، {user.name}! 👨‍🌾
+            {t('welcomeFarmer')}, {user.name}
           </h1>
           <p className="text-gray-600 mt-1 font-medium text-lg">
             {t('district')}: <span className="font-bold text-[#2B2B2B]">{user.district}</span>
@@ -115,7 +116,9 @@ export default function FarmerDashboard() {
           </div>
         ) : listings.length === 0 ? (
           <div className="bg-white rounded-2xl p-8 text-center border-2 border-dashed border-gray-300">
-            <div className="text-5xl mb-3">🌾</div>
+            <div className="w-16 h-16 rounded-2xl bg-[#8FD19E]/20 flex items-center justify-center mx-auto mb-4">
+              <Sprout className="w-8 h-8 text-[#2B2B2B]" />
+            </div>
             <p className="text-xl font-bold text-gray-600 mb-6">
               {t('noListings')}
             </p>
@@ -130,13 +133,8 @@ export default function FarmerDashboard() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {listings.map((item) => {
-              const img1 = item.images[0]?.startsWith('/uploads')
-                ? `http://localhost:5000${item.images[0]}`
-                : item.images[0] || 'https://placehold.co/400x300/8FD19E/ffffff?text=Crop';
-
-              const img2 = item.images[1]?.startsWith('/uploads')
-                ? `http://localhost:5000${item.images[1]}`
-                : item.images[1] || 'https://placehold.co/400x300/6DBE82/ffffff?text=Crop';
+              const img1 = resolveImageUrl(item.images[0]);
+              const img2 = resolveImageUrl(item.images[1]);
 
               const isExpired = new Date() > new Date(item.endsAt);
 
