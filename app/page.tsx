@@ -44,10 +44,10 @@ export default function HomePage() {
         </p>
 
         {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4 max-w-md mx-auto">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4 max-w-xl mx-auto">
           <Link
             href="/register?role=farmer"
-            className="w-full sm:w-auto px-8 py-4 bg-[#8FD19E] hover:bg-[#6DBE82] text-[#2B2B2B] font-black text-lg rounded-xl shadow-sm transition-all flex items-center justify-center gap-2 min-h-[52px]"
+            className="w-full sm:w-auto px-6 py-4 bg-[#8FD19E] hover:bg-[#6DBE82] text-[#2B2B2B] font-black text-lg rounded-xl shadow-sm transition-all flex items-center justify-center gap-2 min-h-[52px]"
           >
             <UserCheck className="w-5 h-5" />
             <span>{isUrdu ? 'کسان کے طور پر شروع کریں' : 'Join as Farmer'}</span>
@@ -55,10 +55,17 @@ export default function HomePage() {
 
           <Link
             href="/register?role=buyer"
-            className="w-full sm:w-auto px-8 py-4 bg-white hover:bg-gray-50 border-2 border-[#8FD19E] text-[#2B2B2B] font-black text-lg rounded-xl shadow-sm transition-all flex items-center justify-center gap-2 min-h-[52px]"
+            className="w-full sm:w-auto px-6 py-4 bg-white hover:bg-gray-50 border-2 border-[#8FD19E] text-[#2B2B2B] font-black text-lg rounded-xl shadow-sm transition-all flex items-center justify-center gap-2 min-h-[52px]"
           >
             <ShoppingCart className="w-5 h-5" />
             <span>{isUrdu ? 'خریدار کے طور پر شامل ہوں' : 'Join as Buyer'}</span>
+          </Link>
+
+          <Link
+            href="/marketplace"
+            className="w-full sm:w-auto px-6 py-4 bg-[#FAF6EA] hover:bg-[#8FD19E]/20 border-2 border-gray-300 text-[#2B2B2B] font-black text-lg rounded-xl shadow-sm transition-all flex items-center justify-center gap-2 min-h-[52px]"
+          >
+            <span>{isUrdu ? 'مارکیٹ دیکھیں' : 'Browse Produce'}</span>
           </Link>
         </div>
 

@@ -34,6 +34,41 @@ export interface User {
   refreshToken?: string;
 }
 
+export interface Product {
+  _id: string;
+  id?: string;
+  title: string;
+  slug: string;
+  category: string;
+  description: string;
+  price: number;
+  unit: 'KG' | 'Maund' | 'Ton' | 'Bale' | 'Crate' | 'Bag' | string;
+  quantity: number;
+  minOrder: number;
+  location: {
+    district: string;
+    address?: string;
+    type?: string;
+    coordinates?: [number, number];
+  };
+  images: string[];
+  status: 'active' | 'paused' | 'sold_out' | 'closed';
+  views: number;
+  inquiriesCount: number;
+  farmer: {
+    _id: string;
+    id?: string;
+    name: string;
+    phone: string;
+    email?: string;
+    district: string;
+    farmerProfile?: FarmerProfile;
+    createdAt?: string;
+  };
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface Listing {
   _id: string;
   farmer: {

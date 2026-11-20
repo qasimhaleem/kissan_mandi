@@ -23,6 +23,7 @@ interface AuthContextType {
   }) => Promise<{ success: boolean; message?: string; mockOtp?: string }>;
   verifyOtp: (phone: string, otp: string) => Promise<{ success: boolean; message?: string }>;
   logout: () => void;
+  updateUser: (updatedUser: Partial<User>) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -161,8 +162,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     router.push('/login');
   };
 
+  const updateUser = (updatedUser: Partial<User>) => {
+    setUser((prev) => {
+      if (!prev) return null;
+      const merged = { ...prev, ...updatedUser };
+      localStorage.setItem('km_user', JSON.stringify(merged));
+      return merged;
+    });
+  };
+
   return (
-    <AuthContext.Provider value={{ user, token, loading, login, register, verifyOtp, logout }}>
+    <AuthContext.Provider value={{ user, token, loading, login, register, verifyOtp, logout, updateUser }}>
       {children}
     </AuthContext.Provider>
   );

@@ -19,6 +19,7 @@ export default function Navbar() {
 
   const navLinks = [
     { href: '/', label: locale === 'ur' ? 'ہوم' : 'Home' },
+    { href: '/marketplace', label: locale === 'ur' ? 'مارکیٹ پلیس' : 'Marketplace' },
     { href: '/how-it-works', label: locale === 'ur' ? 'کیسے کام کرتا ہے' : 'How It Works' },
     { href: '/farmers', label: locale === 'ur' ? 'کسانوں کے لیے' : 'For Farmers' },
     { href: '/buyers', label: locale === 'ur' ? 'خریداروں کے لیے' : 'For Buyers' },

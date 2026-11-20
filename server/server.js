@@ -55,6 +55,8 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // Application Routes
 app.use('/api/health', require('./routes/health'));
 app.use('/api/auth', require('./routes/auth'));
+app.use('/api/products', require('./routes/products'));
+app.use('/api/marketplace', require('./routes/products'));
 app.use('/api/listings', require('./routes/listings'));
 app.use('/api/portals', require('./routes/portals'));
 app.use('/api', require('./routes/portals'));
