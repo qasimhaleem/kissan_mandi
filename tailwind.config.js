@@ -29,8 +29,8 @@ module.exports = {
         },
         'km-ink': {
           DEFAULT: '#1D2B22', // High-contrast Deep Green-Charcoal
-          muted: '#4B5E51',   // Secondary Body Copy
-          subtle: '#6E7F73',  // Captions & Metadata
+          muted: '#425649',   // WCAG AA Secondary Body Copy
+          subtle: '#5B6E61',  // WCAG AA Captions & Metadata
         },
         // Backwards-compatible aliases
         'primary-green': '#8FD19E',
@@ -39,8 +39,37 @@ module.exports = {
         dark: '#1D2B22',
       },
       fontFamily: {
-        sans: ['"Inter"', 'system-ui', '-apple-system', 'sans-serif'],
-        urdu: ['"Noto Nastaliq Urdu"', '"Jameel Noori Nastaleeq"', 'Tahoma', 'sans-serif'],
+        heading: ['var(--font-heading)', 'var(--font-body)', 'sans-serif'],
+        sans: ['var(--font-body)', 'sans-serif'],
+        accent: ['var(--font-accent)', 'Georgia', 'serif'],
+        urdu: ['var(--font-urdu-body)', 'var(--font-urdu-heading)', 'sans-serif'],
+        urduHeading: ['var(--font-urdu-heading)', 'var(--font-urdu-body)', 'sans-serif'],
+      },
+      fontSize: {
+        'hero': [
+          'clamp(2.5rem, 4.4vw + 1rem, 4.25rem)',
+          { lineHeight: '1.1', letterSpacing: '-0.025em', fontWeight: '800' },
+        ],
+        'h2': [
+          'clamp(1.75rem, 2.4vw + 0.75rem, 2.75rem)',
+          { lineHeight: '1.2', letterSpacing: '-0.02em', fontWeight: '700' },
+        ],
+        'h3': [
+          'clamp(1.25rem, 0.9vw + 0.95rem, 1.5rem)',
+          { lineHeight: '1.3', letterSpacing: '-0.015em', fontWeight: '600' },
+        ],
+        'body-fluid': [
+          'clamp(1rem, 0.25vw + 0.92rem, 1.125rem)',
+          { lineHeight: '1.65', fontWeight: '400' },
+        ],
+        'caption': [
+          '0.875rem',
+          { lineHeight: '1.45', fontWeight: '500' },
+        ],
+        'stat': [
+          'clamp(1.75rem, 2vw + 1rem, 2.5rem)',
+          { lineHeight: '1.1', letterSpacing: '-0.025em', fontWeight: '800' },
+        ],
       },
       borderRadius: {
         'xl': '0.875rem',
@@ -55,7 +84,7 @@ module.exports = {
       },
       keyframes: {
         fadeUp: {
-          '0%': { opacity: '0', transform: 'translateY(12px)' },
+          '0%': { opacity: '0', transform: 'translateY(14px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
         },
         shimmer: {
@@ -63,7 +92,7 @@ module.exports = {
         },
       },
       animation: {
-        'fade-up': 'fadeUp 0.45s ease-out forwards',
+        'fade-up': 'fadeUp 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards',
         shimmer: 'shimmer 1.5s infinite',
       },
     },

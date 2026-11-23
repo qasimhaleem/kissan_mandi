@@ -360,16 +360,16 @@ function MarketplaceContent({
       {/* Top Marketplace Search Header */}
       <section className="bg-gradient-to-b from-km-cream-100 to-white border-b border-km-green-200/70 py-10 sm:py-12">
         <div className="km-container space-y-6">
-          <div className="max-w-2xl space-y-2">
-            <span className="km-badge">
+          <div className="max-w-2xl space-y-2.5 animate-fade-up">
+            <span className="km-eyebrow">
               {isUrdu ? 'براہِ راست زرعی منڈی' : 'Direct Trade Marketplace'}
             </span>
-            <h1 className="text-3xl sm:text-4xl font-extrabold text-km-ink tracking-tight">
+            <h1 className="font-heading text-h2 text-km-ink">
               {isUrdu
                 ? 'تازہ فصلیں اور براہِ راست کسان لسٹنگز'
                 : 'Browse Verified Farm Produce'}
             </h1>
-            <p className="text-sm sm:text-base text-km-ink-muted">
+            <p className="text-body-fluid text-km-ink-muted km-measure">
               {isUrdu
                 ? 'پاکستان بھر کے تصدیق شدہ کسانوں سے براہِ راست تازہ فصلیں تلاش کریں اور شفاف بولی لگائیں۔'
                 : 'Filter active harvests by district, crop category, and price range. Bid directly with 0% middleman commission.'}

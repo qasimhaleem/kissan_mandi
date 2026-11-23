@@ -69,11 +69,11 @@ export default function ProductCard({
           <div>
             <Link
               href={href}
-              className="text-lg font-extrabold text-km-ink hover:text-km-green-700 transition-colors line-clamp-1 block"
+              className="font-heading text-h3 text-km-ink hover:text-km-green-700 transition-colors line-clamp-1 block"
             >
               {product.title}
             </Link>
-            <div className="flex items-center gap-1.5 text-xs font-medium text-km-ink-muted mt-1">
+            <div className="flex items-center gap-1.5 text-caption text-km-ink-muted mt-1">
               <MapPin className="w-3.5 h-3.5 text-km-green-600 flex-shrink-0" />
               <span>
                 {product.location?.district || 'Pakistan'}{' '}
@@ -84,24 +84,24 @@ export default function ProductCard({
 
           <div className="bg-km-cream-100 rounded-xl p-3.5 border border-km-cream-300/60 flex items-center justify-between gap-2">
             <div>
-              <span className="text-[11px] font-semibold text-km-ink-muted block">
+              <span className="text-[13px] font-medium text-km-ink-muted block">
                 {isUrdu ? 'موجودہ قیمت / بولی' : 'Direct Price'}
               </span>
               <div className="flex items-baseline gap-1 mt-0.5">
-                <span className="text-lg font-extrabold text-km-green-800">
+                <span className="km-price text-xl sm:text-[22px]">
                   PKR {product.price.toLocaleString()}
                 </span>
-                <span className="text-xs font-semibold text-km-ink-subtle">
+                <span className="text-[13px] font-medium text-km-ink-subtle">
                   / {product.unit}
                 </span>
               </div>
             </div>
 
             <div className="text-end">
-              <span className="text-[11px] font-semibold text-km-ink-muted block">
+              <span className="text-[13px] font-medium text-km-ink-muted block">
                 {isUrdu ? 'مقدار' : 'Quantity'}
               </span>
-              <div className="flex items-center justify-end gap-1 text-sm font-bold text-km-ink mt-0.5">
+              <div className="flex items-center justify-end gap-1 text-[15px] font-semibold text-km-ink mt-0.5 tabular-nums">
                 <Package className="w-3.5 h-3.5 text-km-green-600" />
                 <span>
                   {product.quantity.toLocaleString()} {product.unit}
@@ -110,10 +110,10 @@ export default function ProductCard({
             </div>
           </div>
 
-          <div className="flex items-center justify-between text-xs text-km-ink-muted pt-0.5">
+          <div className="flex items-center justify-between text-[13px] font-medium text-km-ink-muted pt-0.5">
             <span>
               {isUrdu ? 'کم از کم آرڈر:' : 'Min Order:'}{' '}
-              <strong className="text-km-ink">
+              <strong className="text-km-ink font-semibold tabular-nums">
                 {product.minOrder} {product.unit}
               </strong>
             </span>

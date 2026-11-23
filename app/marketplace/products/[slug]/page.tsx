@@ -335,14 +335,14 @@ export default function ProductDetailPage() {
         <div className="lg:col-span-5 lg:sticky lg:top-24">
           <div className="bg-white border-2 border-km-green-300 rounded-3xl p-6 sm:p-8 shadow-km-md space-y-6">
             <div>
-              <span className="text-xs font-extrabold text-km-green-700 uppercase tracking-wider block">
+              <span className="km-eyebrow block">
                 Direct Farm-Gate Asking Price
               </span>
-              <div className="flex items-baseline gap-2 mt-1">
-                <span className="text-3xl sm:text-4xl font-extrabold text-km-ink">
+              <div className="flex items-baseline gap-2 mt-1.5">
+                <span className="km-price text-4xl sm:text-[42px]">
                   PKR {product.price.toLocaleString()}
                 </span>
-                <span className="text-sm font-bold text-km-ink-muted">
+                <span className="text-sm font-semibold text-km-ink-muted">
                   / {product.unit}
                 </span>
               </div>

@@ -1,9 +1,52 @@
 import type { Metadata } from 'next';
+import {
+  Plus_Jakarta_Sans,
+  Inter,
+  Playfair_Display,
+  Noto_Nastaliq_Urdu,
+  Noto_Naskh_Arabic,
+} from 'next/font/google';
 import './globals.css';
 import { Providers } from './providers';
 import Navbar from '@/components/Navbar';
 import MobileNav from '@/components/MobileNav';
 import Footer from '@/components/Footer';
+
+const plusJakartaSans = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  weight: ['700', '800'],
+  variable: '--font-heading',
+  display: 'swap',
+});
+
+const inter = Inter({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  variable: '--font-body',
+  display: 'swap',
+});
+
+const playfairDisplay = Playfair_Display({
+  subsets: ['latin'],
+  weight: ['700'],
+  style: ['italic'],
+  variable: '--font-accent',
+  display: 'swap',
+});
+
+const notoNastaliqUrdu = Noto_Nastaliq_Urdu({
+  subsets: ['arabic'],
+  weight: ['600', '700'],
+  variable: '--font-urdu-heading',
+  display: 'swap',
+});
+
+const notoNaskhArabic = Noto_Naskh_Arabic({
+  subsets: ['arabic'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-urdu-body',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: 'KissanMandi — Direct Agricultural Marketplace for Pakistan',
@@ -17,20 +60,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ur" dir="rtl">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Nastaliq+Urdu:wght@400;600;700&display=swap"
-          rel="stylesheet"
-        />
-      </head>
-      <body className="min-h-screen bg-km-cream-100 text-km-ink antialiased flex flex-col pb-16 sm:pb-0">
+    <html
+      lang="ur"
+      dir="rtl"
+      className={`${plusJakartaSans.variable} ${inter.variable} ${playfairDisplay.variable} ${notoNastaliqUrdu.variable} ${notoNaskhArabic.variable}`}
+    >
+      <body className="min-h-screen bg-km-cream-100 text-km-ink font-sans antialiased flex flex-col pb-16 sm:pb-0">
         <Providers>
           <Navbar />
           <main className="flex-1 w-full">{children}</main>

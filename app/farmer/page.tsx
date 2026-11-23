@@ -355,10 +355,10 @@ export default function FarmerDashboard() {
                   <Icon className="w-4 h-4" />
                 </div>
               </div>
-              <div className="text-2xl sm:text-3xl font-extrabold text-km-ink truncate">
+              <div className="km-stat truncate">
                 {stat.value}
               </div>
-              <p className="text-xs font-medium text-km-ink-subtle">{stat.sub}</p>
+              <p className="text-caption text-km-ink-subtle">{stat.sub}</p>
             </div>
           );
         })}
@@ -492,22 +492,22 @@ export default function FarmerDashboard() {
 
                       <div className="bg-km-cream-100 rounded-xl p-3.5 border border-km-cream-300/60 flex items-center justify-between">
                         <div>
-                          <span className="text-[11px] font-semibold text-km-ink-muted block">
+                          <span className="text-[13px] font-medium text-km-ink-muted block">
                             {isUrdu ? 'قیمت' : 'Price'}
                           </span>
-                          <span className="text-base font-extrabold text-km-green-800">
+                          <span className="km-price text-xl">
                             PKR {product.price.toLocaleString()}
                           </span>
-                          <span className="text-xs text-km-ink-subtle">
+                          <span className="text-[13px] text-km-ink-subtle">
                             {' '}
                             / {product.unit}
                           </span>
                         </div>
                         <div className="text-end">
-                          <span className="text-[11px] font-semibold text-km-ink-muted block">
+                          <span className="text-[13px] font-medium text-km-ink-muted block">
                             {isUrdu ? 'دستیاب' : 'Stock'}
                           </span>
-                          <span className="text-sm font-extrabold text-km-ink">
+                          <span className="font-heading text-base font-bold text-km-ink tabular-nums">
                             {product.quantity.toLocaleString()} {product.unit}
                           </span>
                         </div>

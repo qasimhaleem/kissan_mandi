@@ -197,22 +197,35 @@ export default function HomePage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
             {/* Hero Copy */}
             <div className="lg:col-span-6 space-y-6 animate-fade-up">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-km-green-100 border border-km-green-300/60 text-km-green-800 text-xs font-bold">
+              <div className="km-eyebrow">
                 <ShieldCheck className="w-4 h-4 text-km-green-700" />
                 <span>
                   {isUrdu
                     ? 'پاکستان کی براہِ راست زرعی نیلامی منڈی'
-                    : "Pakistan's Direct Agricultural Bidding Marketplace"}
+                    : "Pakistan's Direct Agri-Marketplace"}
                 </span>
               </div>
 
-              <h1 className="text-4xl sm:text-5xl lg:text-[54px] font-extrabold text-km-ink tracking-tight leading-[1.12]">
-                {isUrdu
-                  ? 'آڑھتی کے بغیر اپنی فصل براہِ راست بیچیں اور پورا منافع کمائیں'
-                  : 'Sell Your Harvest Directly. Keep Every Rupee You Earn.'}
+              <h1 className="font-heading text-hero text-km-ink">
+                {isUrdu ? (
+                  <>
+                    آڑھتی کے بغیر اپنی فصل{' '}
+                    <span className="km-highlight">براہِ راست</span> بیچیں اور
+                    پورا منافع کمائیں
+                  </>
+                ) : (
+                  <>
+                    Sell Your Harvest{' '}
+                    <span className="font-accent italic font-bold text-km-green-700">
+                      Directly.
+                    </span>{' '}
+                    Keep <span className="km-highlight">Every Rupee</span> You
+                    Earn.
+                  </>
+                )}
               </h1>
 
-              <p className="text-base sm:text-lg text-km-ink-muted leading-relaxed max-w-xl">
+              <p className="text-body-fluid text-km-ink-muted km-measure">
                 {isUrdu
                   ? 'کسان منڈی پاکستان کے کسانوں کو تصدیق شدہ خریداروں سے براہِ راست جوڑتی ہے۔ فصل لگائیں، شفاف بولیاں وصول کریں اور بغیر کسی کمیشن کے بہترین قیمت حاصل کریں۔'
                   : 'KissanMandi connects Pakistani farmers directly with verified wholesalers, mills, and buyers. List fresh produce in minutes, receive competitive bids, and trade with 0% middleman commission.'}
@@ -222,14 +235,14 @@ export default function HomePage() {
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 pt-2">
                 <Link
                   href="/register?role=farmer"
-                  className="km-btn-primary px-7 py-4 text-base shadow-km-md"
+                  className="km-btn-primary px-7 py-4 shadow-km-md"
                 >
                   <UserCheck className="w-5 h-5" />
                   <span>{isUrdu ? 'میں کسان ہوں' : "I'm a Farmer"}</span>
                 </Link>
                 <Link
                   href="/register?role=buyer"
-                  className="km-btn-outline px-7 py-4 text-base border-km-green-700/40"
+                  className="km-btn-outline px-7 py-4 border-km-green-700/40"
                 >
                   <ShoppingCart className="w-5 h-5" />
                   <span>{isUrdu ? 'میں خریدار ہوں' : "I'm a Buyer"}</span>
@@ -239,26 +252,20 @@ export default function HomePage() {
               {/* 3 Trust Stats */}
               <div className="grid grid-cols-3 gap-4 pt-6 border-t border-km-green-200/70 max-w-lg">
                 <div>
-                  <div className="text-2xl sm:text-3xl font-extrabold text-km-green-800">
-                    2,400+
-                  </div>
-                  <div className="text-xs font-semibold text-km-ink-muted mt-0.5">
+                  <div className="km-stat">2,400+</div>
+                  <div className="text-caption text-km-ink-muted mt-1">
                     {isUrdu ? 'رجسٹرڈ کسان' : 'Verified Farmers'}
                   </div>
                 </div>
                 <div>
-                  <div className="text-2xl sm:text-3xl font-extrabold text-km-green-800">
-                    5,800+
-                  </div>
-                  <div className="text-xs font-semibold text-km-ink-muted mt-0.5">
+                  <div className="km-stat">5,800+</div>
+                  <div className="text-caption text-km-ink-muted mt-1">
                     {isUrdu ? 'مکمل فصلیں' : 'Produce Listings'}
                   </div>
                 </div>
                 <div>
-                  <div className="text-2xl sm:text-3xl font-extrabold text-km-green-800">
-                    28+
-                  </div>
-                  <div className="text-xs font-semibold text-km-ink-muted mt-0.5">
+                  <div className="km-stat">28+</div>
+                  <div className="text-caption text-km-ink-muted mt-1">
                     {isUrdu ? 'شہر اور اضلاع' : 'Cities & Districts'}
                   </div>
                 </div>
@@ -661,16 +668,24 @@ export default function HomePage() {
               </div>
             </div>
 
-            <div className="lg:col-span-6 space-y-6">
-              <span className="km-badge">
+            <div className="lg:col-span-6 space-y-6 animate-fade-up">
+              <span className="km-eyebrow">
                 {isUrdu ? 'ہمارا مشن' : 'Our Mission'}
               </span>
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-km-ink tracking-tight">
-                {isUrdu
-                  ? 'خوشحال کسان، مضبوط زرعی پاکستان'
-                  : 'Empowering Growers to Own Their Market'}
+              <h2 className="font-heading text-h2 text-km-ink">
+                {isUrdu ? (
+                  <>
+                    خوشحال کسان،{' '}
+                    <span className="km-highlight">مضبوط زرعی پاکستان</span>
+                  </>
+                ) : (
+                  <>
+                    Empowering Growers to{' '}
+                    <span className="km-highlight">Own Their Market</span>
+                  </>
+                )}
               </h2>
-              <p className="text-base text-km-ink-muted leading-relaxed">
+              <p className="text-body-fluid text-km-ink-muted km-measure">
                 {isUrdu
                   ? 'کسان منڈی کا مقصد پاکستان کے لاکھوں چھوٹے اور بڑے کسانوں کو جدید ڈیجیٹل منڈی تک براہِ راست رسائی دینا ہے، تاکہ محنت کا پھل آڑھتی کے بجائے کسان کے گھر پہنچے۔'
                   : 'Agriculture is the backbone of Pakistan, yet farmers receive the smallest share of the final retail price. KissanMandi brings transparent, nationwide price discovery directly to every farmer’s smartphone.'}

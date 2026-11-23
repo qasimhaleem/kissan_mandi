@@ -306,10 +306,10 @@ export default function AddProductPage() {
           <ArrowLeft className="w-5 h-5 rtl:rotate-180" />
         </Link>
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-km-ink">
+          <h1 className="font-heading text-h2 text-km-ink">
             {t('postProduce')}
           </h1>
-          <p className="text-sm sm:text-base text-km-ink-muted">
+          <p className="text-body-fluid text-km-ink-muted">
             {isUrdu
               ? 'اپنی فصل کی تفصیل اور ۲ تصاویر شامل کر کے براہِ راست منڈی میں پیش کریں۔'
               : 'Enter your crop details and upload clear farm photos to reach verified buyers.'}

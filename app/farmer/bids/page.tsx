@@ -257,13 +257,13 @@ function FarmerBidsContent() {
                     #{index + 1}
                   </div>
                   <div>
-                    <div className="text-2xl font-extrabold text-km-green-800">
+                    <div className="km-price text-2xl sm:text-3xl">
                       PKR {bid.amount.toLocaleString()}
                     </div>
-                    <div className="text-sm font-bold text-km-ink">
+                    <div className="text-base font-semibold text-km-ink">
                       {bid.buyer?.name} ({bid.buyer?.district || 'Pakistan'})
                     </div>
-                    <div className="text-xs text-km-ink-subtle">
+                    <div className="text-caption text-km-ink-subtle">
                       {new Date(bid.createdAt).toLocaleString()}
                     </div>
                   </div>

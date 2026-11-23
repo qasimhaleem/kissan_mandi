@@ -5,6 +5,7 @@ import React from 'react';
 interface SectionHeaderProps {
   badge?: string;
   title: string;
+  highlight?: string;
   subtitle?: string;
   align?: 'center' | 'start';
 }
@@ -12,6 +13,7 @@ interface SectionHeaderProps {
 export default function SectionHeader({
   badge,
   title,
+  highlight,
   subtitle,
   align = 'center',
 }: SectionHeaderProps) {
@@ -19,16 +21,30 @@ export default function SectionHeader({
 
   return (
     <div
-      className={`space-y-3 ${
-        isCentered ? 'text-center max-w-2xl mx-auto' : 'text-start max-w-2xl'
+      className={`space-y-3 animate-fade-up ${
+        isCentered ? 'text-center max-w-3xl mx-auto' : 'text-start max-w-2xl'
       }`}
     >
-      {badge && <span className="km-badge">{badge}</span>}
-      <h2 className="text-3xl sm:text-4xl font-extrabold text-km-ink tracking-tight">
+      {badge && (
+        <div className={isCentered ? 'flex justify-center' : ''}>
+          <span className="km-eyebrow">{badge}</span>
+        </div>
+      )}
+      <h2 className="font-heading text-h2 text-km-ink">
         {title}
+        {highlight ? (
+          <>
+            {' '}
+            <span className="km-highlight">{highlight}</span>
+          </>
+        ) : null}
       </h2>
       {subtitle && (
-        <p className="text-base sm:text-lg text-km-ink-muted leading-relaxed">
+        <p
+          className={`text-body-fluid text-km-ink-muted km-measure ${
+            isCentered ? 'mx-auto' : ''
+          }`}
+        >
           {subtitle}
         </p>
       )}
