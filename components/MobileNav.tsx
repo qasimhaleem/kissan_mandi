@@ -5,70 +5,89 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
-import { PlusCircle, List, ArrowDownToLine, ShoppingCart, User } from 'lucide-react';
+import {
+  PlusCircle,
+  List,
+  ArrowDownToLine,
+  ShoppingCart,
+  Store,
+} from 'lucide-react';
 
 export default function MobileNav() {
   const pathname = usePathname();
-  const { t } = useLanguage();
+  const { locale, t } = useLanguage();
   const { user } = useAuth();
+  const isUrdu = locale === 'ur';
 
   if (!user) return null;
 
   return (
-    <nav className="sm:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50 h-16 flex items-center justify-around px-2">
+    <nav
+      aria-label="Mobile quick actions"
+      className="sm:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-km-green-200 shadow-km-lg z-50 h-16 flex items-center justify-around px-2"
+    >
       {user.role === 'farmer' ? (
         <>
           <Link
             href="/farmer"
-            className={`flex flex-col items-center justify-center w-full py-1 ${
-              pathname === '/farmer' ? 'text-[#6DBE82] font-bold' : 'text-[#2B2B2B]'
+            className={`flex flex-col items-center justify-center w-full py-1.5 rounded-xl transition-colors ${
+              pathname === '/farmer'
+                ? 'text-km-green-800 font-extrabold bg-km-green-50'
+                : 'text-km-ink-muted'
             }`}
           >
-            <List className="w-6 h-6 mb-0.5" />
-            <span className="text-xs">{t('myListings')}</span>
+            <List className="w-5 h-5 mb-0.5" />
+            <span className="text-[11px]">{t('myListings')}</span>
           </Link>
           <Link
             href="/farmer/post"
-            className={`flex flex-col items-center justify-center w-full py-1 ${
-              pathname === '/farmer/post' ? 'text-[#6DBE82] font-bold' : 'text-[#2B2B2B]'
+            className={`flex flex-col items-center justify-center w-full py-1.5 rounded-xl transition-colors ${
+              pathname === '/farmer/post'
+                ? 'text-km-green-800 font-extrabold bg-km-green-50'
+                : 'text-km-ink-muted'
             }`}
           >
-            <PlusCircle className="w-6 h-6 mb-0.5" />
-            <span className="text-xs">{t('postProduce')}</span>
+            <PlusCircle className="w-5 h-5 mb-0.5" />
+            <span className="text-[11px]">{t('postProduce')}</span>
           </Link>
           <Link
             href="/farmer/bids"
-            className={`flex flex-col items-center justify-center w-full py-1 ${
-              pathname === '/farmer/bids' ? 'text-[#6DBE82] font-bold' : 'text-[#2B2B2B]'
+            className={`flex flex-col items-center justify-center w-full py-1.5 rounded-xl transition-colors ${
+              pathname === '/farmer/bids'
+                ? 'text-km-green-800 font-extrabold bg-km-green-50'
+                : 'text-km-ink-muted'
             }`}
           >
-            <ArrowDownToLine className="w-6 h-6 mb-0.5" />
-            <span className="text-xs">{t('bidsReceived')}</span>
+            <ArrowDownToLine className="w-5 h-5 mb-0.5" />
+            <span className="text-[11px]">{t('bidsReceived')}</span>
           </Link>
         </>
       ) : (
         <>
           <Link
-            href="/buyer"
-            className={`flex flex-col items-center justify-center w-full py-1 ${
-              pathname === '/buyer' ? 'text-[#6DBE82] font-bold' : 'text-[#2B2B2B]'
+            href="/marketplace"
+            className={`flex flex-col items-center justify-center w-full py-1.5 rounded-xl transition-colors ${
+              pathname?.startsWith('/marketplace')
+                ? 'text-km-green-800 font-extrabold bg-km-green-50'
+                : 'text-km-ink-muted'
             }`}
           >
-            <ShoppingCart className="w-6 h-6 mb-0.5" />
-            <span className="text-xs">{t('browseProduce')}</span>
+            <Store className="w-5 h-5 mb-0.5" />
+            <span className="text-[11px]">{isUrdu ? 'مارکیٹ' : 'Marketplace'}</span>
           </Link>
           <Link
-            href="/buyer/bids"
-            className={`flex flex-col items-center justify-center w-full py-1 ${
-              pathname === '/buyer/bids' ? 'text-[#6DBE82] font-bold' : 'text-[#2B2B2B]'
+            href="/buyer"
+            className={`flex flex-col items-center justify-center w-full py-1.5 rounded-xl transition-colors ${
+              pathname === '/buyer'
+                ? 'text-km-green-800 font-extrabold bg-km-green-50'
+                : 'text-km-ink-muted'
             }`}
           >
-            <ArrowDownToLine className="w-6 h-6 mb-0.5" />
-            <span className="text-xs">{t('myBids')}</span>
+            <ShoppingCart className="w-5 h-5 mb-0.5" />
+            <span className="text-[11px]">{t('browseProduce')}</span>
           </Link>
         </>
       )}
     </nav>
   );
 }
-

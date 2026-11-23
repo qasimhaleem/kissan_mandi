@@ -2,10 +2,17 @@
 
 import React, { useEffect, useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
-import { Check, ArrowLeft, Phone, User as UserIcon } from 'lucide-react';
-import Link from 'next/link';
+import {
+  CheckCircle2,
+  ArrowLeft,
+  Phone,
+  Gavel,
+  Award,
+  User as UserIcon,
+} from 'lucide-react';
 import { Listing, Bid } from '@/lib/types';
 import { API_BASE } from '@/lib/api';
 
@@ -13,38 +20,26 @@ function FarmerBidsContent() {
   const searchParams = useSearchParams();
   const listingId = searchParams.get('listingId');
   const { user, token, loading } = useAuth();
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
+  const isUrdu = locale === 'ur';
   const router = useRouter();
 
   const [myListings, setMyListings] = useState<Listing[]>([]);
-  const [selectedListingId, setSelectedListingId] = useState<string>(listingId || '');
+  const [selectedListingId, setSelectedListingId] = useState<string>(
+    listingId || ''
+  );
   const [bids, setBids] = useState<Bid[]>([]);
   const [fetching, setFetching] = useState(false);
-  const [acceptedBuyer, setAcceptedBuyer] = useState<{ name: string; phone: string } | null>(null);
+  const [acceptedBuyer, setAcceptedBuyer] = useState<{
+    name: string;
+    phone: string;
+  } | null>(null);
 
   useEffect(() => {
     if (!loading && (!user || user.role !== 'farmer')) {
       router.push('/login');
     }
   }, [user, loading, router]);
-
-  useEffect(() => {
-    if (token) {
-      fetchMyListings();
-    }
-  }, [token]);
-
-  useEffect(() => {
-    if (listingId) {
-      setSelectedListingId(listingId);
-    }
-  }, [listingId]);
-
-  useEffect(() => {
-    if (selectedListingId && token) {
-      fetchBids(selectedListingId);
-    }
-  }, [selectedListingId, token]);
 
   const fetchMyListings = async () => {
     try {
@@ -80,8 +75,35 @@ function FarmerBidsContent() {
     }
   };
 
+  useEffect(() => {
+    if (token) {
+      fetchMyListings();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token]);
+
+  useEffect(() => {
+    if (listingId) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setSelectedListingId(listingId);
+    }
+  }, [listingId]);
+
+  useEffect(() => {
+    if (selectedListingId && token) {
+      fetchBids(selectedListingId);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedListingId, token]);
+
   const handleAcceptBid = async (bidId: string) => {
-    if (!confirm('کیا آپ یہ بولی قبول کرنا چاہتے ہیں؟ (Do you want to accept this bid?)')) {
+    if (
+      !confirm(
+        isUrdu
+          ? 'کیا آپ یہ بولی قبول کرنا چاہتے ہیں؟'
+          : 'Do you want to accept this bid?'
+      )
+    ) {
       return;
     }
 
@@ -110,124 +132,154 @@ function FarmerBidsContent() {
   const activeListing = myListings.find((l) => l._id === selectedListingId);
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
-      <div className="flex items-center justify-between pb-3 border-b border-gray-200">
+    <div className="km-container max-w-4xl py-8 sm:py-10 space-y-6">
+      <div className="flex items-center gap-4">
         <Link
           href="/farmer"
-          className="flex items-center gap-1 font-bold text-gray-700 hover:text-black"
+          aria-label="Back to Farmer Portal"
+          className="p-3 rounded-xl border border-km-green-200 bg-white hover:bg-km-green-50 text-km-green-800 transition-colors"
         >
-          <ArrowLeft className="w-5 h-5" />
-          <span>{t('backToHome')}</span>
+          <ArrowLeft className="w-5 h-5 rtl:rotate-180" />
         </Link>
-        <h1 className="text-2xl sm:text-3xl font-black text-[#2B2B2B]">
-          {t('bidsReceived')}
-        </h1>
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-km-ink">
+            {t('bidsReceived')}
+          </h1>
+          <p className="text-sm text-km-ink-muted">
+            {isUrdu
+              ? 'اپنی فصل پر موصول ہونے والی بولیاں دیکھیں اور بہترین قیمت قبول کریں۔'
+              : 'Review incoming buyer bids and accept the highest offer directly.'}
+          </p>
+        </div>
       </div>
 
-      {/* Select Which Produce Listing */}
+      {/* Listing Selector */}
       {myListings.length > 0 && (
-        <div className="bg-white p-4 rounded-2xl border-2 border-[#8FD19E]">
-          <label className="block text-lg font-black text-[#2B2B2B] mb-2">
-            فصل کا انتخاب کریں (Select Produce)
+        <div className="km-card p-5 sm:p-6 space-y-2.5 border-2 border-km-green-300">
+          <label
+            htmlFor="bid-listing-select"
+            className="block text-base font-extrabold text-km-ink"
+          >
+            {isUrdu ? 'فصل کا انتخاب کریں' : 'Select Produce Listing'}
           </label>
           <select
+            id="bid-listing-select"
             value={selectedListingId}
             onChange={(e) => setSelectedListingId(e.target.value)}
-            className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-lg font-bold bg-[#FAF6EA] text-[#2B2B2B]"
+            className="km-input py-3.5 text-base font-bold bg-km-cream-100"
           >
             {myListings.map((l) => (
               <option key={l._id} value={l._id}>
-                {t(`crops.${l.crop}`) || l.crop} - {l.quantity} {t(l.unit)} (شروعاتی: Rs {l.basePrice})
+                {t(`crops.${l.crop}`) || l.crop} — {l.quantity} {t(l.unit)} (Base: PKR{' '}
+                {l.basePrice})
               </option>
             ))}
           </select>
         </div>
       )}
 
-      {/* Accepted Buyer Details Card */}
+      {/* Accepted Buyer Contact Card */}
       {acceptedBuyer && (
-        <div className="bg-green-50 border-2 border-[#8FD19E] p-6 rounded-2xl text-center space-y-3">
-          <div className="w-14 h-14 rounded-full bg-green-100 flex items-center justify-center mx-auto">
-            <Check className="w-7 h-7 text-green-700" />
+        <div className="bg-km-green-50 border-2 border-km-green-400 p-6 sm:p-8 rounded-3xl text-center space-y-4 shadow-km-sm">
+          <div className="w-14 h-14 rounded-2xl bg-km-green-700 text-white flex items-center justify-center mx-auto">
+            <Award className="w-7 h-7" />
           </div>
-          <h3 className="text-2xl font-black text-green-900">
+          <h2 className="text-2xl font-extrabold text-km-ink">
             {t('congratulations')}
-          </h3>
-          <p className="text-lg font-bold text-gray-800">
-            {t('contactBuyer')} اور مال کی ترسیل طے کریں:
+          </h2>
+          <p className="text-base font-medium text-km-ink-muted">
+            {t('contactBuyer')}
           </p>
-          <div className="bg-white p-4 rounded-xl inline-block text-left border border-green-200 shadow-sm">
-            <p className="text-xl font-black text-[#2B2B2B]">
-              نام: {acceptedBuyer.name}
+          <div className="bg-white p-5 rounded-2xl inline-block text-start border border-km-green-200 shadow-km-sm space-y-1.5">
+            <p className="text-lg font-extrabold text-km-ink flex items-center gap-2">
+              <UserIcon className="w-5 h-5 text-km-green-700" />
+              <span>{acceptedBuyer.name}</span>
             </p>
-            <p className="text-2xl font-black text-[#6DBE82] mt-1 flex items-center gap-2">
-              <Phone className="w-6 h-6" /> {acceptedBuyer.phone}
-            </p>
+            <a
+              href={`tel:${acceptedBuyer.phone}`}
+              className="text-2xl font-extrabold text-km-green-800 hover:underline flex items-center gap-2"
+            >
+              <Phone className="w-5 h-5" />
+              <span>{acceptedBuyer.phone}</span>
+            </a>
           </div>
         </div>
       )}
 
-      {/* Bids List Sorted Highest First with Big Accept Button */}
-      <div className="bg-white p-6 rounded-3xl border-2 border-[#FAF6EA] shadow-sm">
-        <h2 className="text-xl font-black text-[#2B2B2B] mb-4">
-          موصولہ بولیاں (Bids Received) {bids.length > 0 ? `(${bids.length})` : ''}
-        </h2>
+      {/* Bids List */}
+      <div className="km-card p-6 sm:p-8 space-y-5">
+        <div className="flex items-center justify-between border-b border-km-green-100 pb-4">
+          <h2 className="text-xl font-extrabold text-km-ink flex items-center gap-2">
+            <Gavel className="w-5 h-5 text-km-green-700" />
+            <span>
+              {t('bidsReceived')} {bids.length > 0 ? `(${bids.length})` : ''}
+            </span>
+          </h2>
+        </div>
 
         {fetching ? (
-          <div className="text-center py-8 text-lg font-bold text-gray-500">
-            ...
+          <div className="py-12 flex justify-center">
+            <div className="w-8 h-8 border-4 border-km-green-700 border-t-transparent rounded-full animate-spin" />
           </div>
         ) : bids.length === 0 ? (
-          <div className="text-center py-12 text-gray-500 font-bold text-lg">
-            اس فصل پر ابھی کوئی بولی موصول نہیں ہوئی۔ خریدار جلد بولی لگائیں گے!
+          <div className="py-12 text-center bg-km-cream-100 rounded-2xl border border-dashed border-km-green-300 space-y-2 p-6">
+            <Gavel className="w-10 h-10 text-km-green-700 mx-auto" />
+            <p className="text-base font-bold text-km-ink">
+              {isUrdu
+                ? 'اس فصل پر ابھی کوئی بولی موصول نہیں ہوئی۔'
+                : 'No bids received for this listing yet.'}
+            </p>
+            <p className="text-sm text-km-ink-muted">
+              {isUrdu
+                ? 'خریداروں کی بولیاں یہاں خودکار طور پر ظاہر ہوں گی۔'
+                : 'Verified buyer offers will appear here as soon as they are placed.'}
+            </p>
           </div>
         ) : (
           <div className="space-y-4">
             {bids.map((bid, index) => (
               <div
                 key={bid._id}
-                className={`p-4 rounded-2xl border-2 flex flex-col sm:flex-row items-center justify-between gap-4 transition-all ${
+                className={`p-5 rounded-2xl border-2 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all ${
                   index === 0
-                    ? 'border-[#8FD19E] bg-[#FAF6EA]'
-                    : 'border-gray-200 bg-white'
+                    ? 'border-km-green-400 bg-km-green-50/70 shadow-km-sm'
+                    : 'border-km-green-100 bg-white'
                 }`}
               >
-                <div className="flex items-center gap-4 w-full sm:w-auto">
+                <div className="flex items-center gap-4">
                   <div
-                    className={`w-12 h-12 rounded-full flex items-center justify-center font-black text-lg ${
+                    className={`w-12 h-12 rounded-2xl flex items-center justify-center font-extrabold text-base flex-shrink-0 ${
                       index === 0
-                        ? 'bg-[#8FD19E] text-white'
-                        : 'bg-gray-100 text-gray-700'
+                        ? 'bg-km-green-700 text-white'
+                        : 'bg-km-cream-100 text-km-ink'
                     }`}
                   >
                     #{index + 1}
                   </div>
                   <div>
-                    <div className="text-2xl font-black text-[#2B2B2B]">
-                      Rs {bid.amount}
+                    <div className="text-2xl font-extrabold text-km-green-800">
+                      PKR {bid.amount.toLocaleString()}
                     </div>
-                    <div className="text-sm font-bold text-gray-600">
-                      خریدار: {bid.buyer?.name} ({bid.buyer?.district || 'پنجاب'})
+                    <div className="text-sm font-bold text-km-ink">
+                      {bid.buyer?.name} ({bid.buyer?.district || 'Pakistan'})
                     </div>
-                    <div className="text-xs text-gray-400">
+                    <div className="text-xs text-km-ink-subtle">
                       {new Date(bid.createdAt).toLocaleString()}
                     </div>
                   </div>
                 </div>
 
-                {/* Big Accept Button */}
                 {activeListing?.status !== 'sold' ? (
                   <button
+                    type="button"
                     onClick={() => handleAcceptBid(bid._id)}
-                    className="w-full sm:w-auto px-8 py-3.5 bg-[#8FD19E] hover:bg-[#6DBE82] text-[#2B2B2B] font-black text-xl rounded-xl shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer min-h-[48px]"
+                    className="w-full sm:w-auto km-btn-primary px-7 py-3.5 text-base"
                   >
-                    <Check className="w-6 h-6" />
+                    <CheckCircle2 className="w-5 h-5" />
                     <span>{t('acceptBid')}</span>
                   </button>
                 ) : (
-                  <span className="px-4 py-2 bg-gray-100 text-gray-600 font-bold rounded-xl text-sm">
-                    {t('statusSold')}
-                  </span>
+                  <span className="km-badge">{t('statusSold')}</span>
                 )}
               </div>
             ))}
@@ -240,9 +292,14 @@ function FarmerBidsContent() {
 
 export default function FarmerBidsPage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense
+      fallback={
+        <div className="min-h-[50vh] flex items-center justify-center">
+          <div className="w-8 h-8 border-4 border-km-green-700 border-t-transparent rounded-full animate-spin" />
+        </div>
+      }
+    >
       <FarmerBidsContent />
     </Suspense>
   );
 }
-

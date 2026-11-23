@@ -41,8 +41,11 @@ export async function checkApiHealth(): Promise<HealthResponse> {
  * Resolves an image URL whether it's an external Cloudinary link or a local /uploads path
  */
 export function resolveImageUrl(src?: string): string {
-  if (!src) {
-    return 'https://placehold.co/600x400/8FD19E/2B2B2B?text=Produce';
+  if (!src || src.includes('placehold.co')) {
+    return '/images/produce-vegetables.jpg';
+  }
+  if (src.startsWith('/images/')) {
+    return src;
   }
   if (src.startsWith('http://') || src.startsWith('https://')) {
     return src;

@@ -1,20 +1,19 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   Building2,
-  TrendingDown,
   MapPin,
   Camera,
-  CheckCircle2,
   Clock,
-  ShieldCheck,
   ArrowRight,
-  Filter,
+  ShoppingCart,
 } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'For Commercial Buyers - KissanMandi Agricultural Marketplace',
-  description: 'Procure verified fresh agricultural produce directly from Pakistani farmers at competitive bidding rates on KissanMandi.',
+  title: 'For Commercial Buyers — KissanMandi Agricultural Marketplace',
+  description:
+    'Procure verified fresh agricultural produce directly from Pakistani farmers at competitive bidding rates on KissanMandi.',
 };
 
 export default function ForBuyersPage() {
@@ -25,11 +24,11 @@ export default function ForBuyersPage() {
     },
     {
       title: 'Agricultural Exporters',
-      desc: 'Procure high-grade basmati rice, citrus (kinnow), and mangoes with full farm-gate traceability and photo verification.',
+      desc: 'Procure high-grade Basmati rice, kinnow citrus, and mangoes with full farm-gate traceability and photo verification.',
     },
     {
       title: 'Wholesale Grain Merchants',
-      desc: 'Monitor real-time harvest auctions across Punjab and Sindh, securing competitive spot pricing as soon as crops are cut.',
+      desc: 'Monitor real-time harvest listings across Punjab, KP, and Sindh to secure competitive spot pricing.',
     },
     {
       title: 'Food Processors & Retailers',
@@ -40,92 +39,126 @@ export default function ForBuyersPage() {
   const features = [
     {
       title: 'Direct Farm Sourcing',
-      desc: 'Buy directly from the actual grower. Eliminate two to three layers of middlemen and artificial hoarding markups.',
+      desc: 'Buy directly from verified growers. Eliminate multiple middleman layers and artificial hoarding markups.',
       icon: Building2,
     },
     {
-      title: 'Location Proximity Matching',
-      desc: 'Filter listings by district or distance in kilometers to optimize your freight and transport logistics.',
+      title: 'District & Proximity Filtering',
+      desc: 'Filter listings by district, category, volume, and price to optimize transport and freight logistics.',
       icon: MapPin,
     },
     {
-      title: 'Dual Verified Batch Photos',
-      desc: 'Every listing requires two mandatory high-resolution photos (overview and grain close-up) before bids can be received.',
+      title: 'Verified Harvest Photos',
+      desc: 'Review real farm batch photos before placing bids or dispatching transport vehicles.',
       icon: Camera,
     },
     {
-      title: 'Live Auction Transparency',
-      desc: 'Fair, open bidding windows. View current highest bids, countdown timers, and place validated competitive offers.',
+      title: 'Transparent Bidding Windows',
+      desc: 'Open, fair offers with direct farmer contact upon acceptance and Cash on Delivery settlement.',
       icon: Clock,
     },
   ];
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-12 space-y-16">
-      {/* Header */}
-      <div className="text-center space-y-4">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-[#8FD19E] text-xs font-bold text-[#2B2B2B]">
-          <Building2 className="w-4 h-4 text-[#6DBE82]" />
-          <span>Commercial Procurement</span>
-        </div>
-        <h1 className="text-4xl sm:text-5xl font-black text-[#2B2B2B] tracking-tight">
-          Reliable Direct Sourcing for Commercial Buyers
-        </h1>
-        <p className="text-lg text-gray-700 max-w-2xl mx-auto font-medium leading-relaxed">
-          Procure wheat, rice, cotton, sugarcane, maize, and horticultural crops directly from verified growers across Pakistan with zero intermediary markups.
-        </p>
-      </div>
-
-      {/* Target Buyer Categories */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {buyerCategories.map((cat, index) => (
-          <div key={index} className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-2">
-            <h3 className="text-xl font-bold text-[#2B2B2B]">{cat.title}</h3>
-            <p className="text-sm text-gray-600 font-medium leading-relaxed">{cat.desc}</p>
+    <div className="w-full">
+      {/* Hero */}
+      <section className="bg-gradient-to-b from-km-cream-100 to-white border-b border-km-green-200/70 py-14 sm:py-20">
+        <div className="km-container grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+          <div className="lg:col-span-6 space-y-5">
+            <span className="km-badge">
+              <Building2 className="w-3.5 h-3.5" />
+              <span>Commercial Procurement</span>
+            </span>
+            <h1 className="text-4xl sm:text-5xl font-extrabold text-km-ink tracking-tight leading-tight">
+              Reliable Direct Sourcing for Commercial Buyers
+            </h1>
+            <p className="text-base sm:text-lg text-km-ink-muted leading-relaxed">
+              Procure wheat, rice, mangoes, citrus, cotton, and fresh vegetables directly from verified growers across Pakistan with zero intermediary markups.
+            </p>
+            <div className="flex flex-wrap gap-3 pt-2">
+              <Link href="/marketplace" className="km-btn-primary px-7 py-3.5 text-base">
+                <ShoppingCart className="w-4 h-4" />
+                <span>Browse Live Marketplace</span>
+              </Link>
+              <Link href="/register?role=buyer" className="km-btn-outline px-6 py-3.5">
+                <span>Register as Buyer</span>
+              </Link>
+            </div>
           </div>
-        ))}
-      </div>
+          <div className="lg:col-span-6">
+            <div className="relative aspect-[16/10] rounded-3xl overflow-hidden shadow-km-lg border-4 border-white">
+              <Image
+                src="/images/produce-fruits.jpg"
+                alt="Fresh Pakistani mangoes and kinnow citrus crates ready for commercial procurement"
+                fill
+                priority
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                className="object-cover"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
 
-      {/* Feature Grid */}
-      <div className="bg-white border border-gray-200 rounded-3xl p-8 space-y-8">
-        <h2 className="text-2xl sm:text-3xl font-black text-[#2B2B2B] text-center">
-          Procurement Advantages
-        </h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {features.map((f, i) => {
-            const Icon = f.icon;
-            return (
-              <div key={i} className="p-6 bg-[#FAF6EA] rounded-2xl border border-gray-200 space-y-3">
-                <div className="w-10 h-10 rounded-xl bg-white border border-[#8FD19E] flex items-center justify-center text-[#2B2B2B]">
-                  <Icon className="w-5 h-5" />
+      {/* Buyer Categories & Features */}
+      <section className="py-16 sm:py-20 bg-white">
+        <div className="km-container max-w-5xl space-y-14">
+          <div className="space-y-6">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-km-ink text-center">
+              Who Buys on KissanMandi
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {buyerCategories.map((cat, idx) => (
+                <div key={idx} className="bg-km-cream-100 rounded-2xl p-6 border border-km-cream-300 space-y-2">
+                  <h3 className="text-lg font-extrabold text-km-ink">{cat.title}</h3>
+                  <p className="text-sm text-km-ink-muted leading-relaxed">{cat.desc}</p>
                 </div>
-                <h4 className="text-lg font-bold text-[#2B2B2B]">{f.title}</h4>
-                <p className="text-xs text-gray-600 font-medium leading-relaxed">{f.desc}</p>
-              </div>
-            );
-          })}
-        </div>
-      </div>
+              ))}
+            </div>
+          </div>
 
-      {/* CTA Box */}
-      <div className="bg-[#FAF6EA] border-2 border-[#8FD19E] rounded-3xl p-8 text-center space-y-4">
-        <h3 className="text-2xl font-black text-[#2B2B2B]">
-          Upgrade Your Agricultural Procurement
-        </h3>
-        <p className="text-sm text-gray-600 max-w-lg mx-auto font-medium">
-          Create your commercial buyer profile today to access live harvest auctions and bid directly on verified crops.
-        </p>
-        <div className="pt-2">
-          <Link
-            href="/register?role=buyer"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-[#8FD19E] hover:bg-[#6DBE82] text-[#2B2B2B] font-black text-lg rounded-xl shadow-sm transition-all"
-          >
-            <span>Register as Commercial Buyer</span>
-            <ArrowRight className="w-5 h-5" />
-          </Link>
+          <div className="space-y-6">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-km-ink text-center">
+              Procurement Advantages
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {features.map((feat, idx) => {
+                const Icon = feat.icon;
+                return (
+                  <div key={idx} className="km-card km-card-hover p-7 space-y-3.5">
+                    <div className="w-12 h-12 rounded-2xl bg-km-green-100 text-km-green-800 flex items-center justify-center">
+                      <Icon className="w-6 h-6" />
+                    </div>
+                    <h3 className="text-xl font-extrabold text-km-ink">{feat.title}</h3>
+                    <p className="text-sm text-km-ink-muted leading-relaxed">{feat.desc}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="bg-km-green-800 text-white rounded-3xl p-8 sm:p-10 text-center space-y-5 shadow-km-md">
+            <h3 className="text-2xl sm:text-3xl font-extrabold text-white">
+              Start Sourcing Directly From Growers Today
+            </h3>
+            <p className="text-sm sm:text-base text-km-green-100 max-w-lg mx-auto">
+              Browse verified listings by district and crop type, or create a free buyer account to place bids.
+            </p>
+            <div className="flex flex-wrap justify-center gap-3">
+              <Link href="/register?role=buyer" className="km-btn-light px-7 py-3.5">
+                <span>Create Buyer Account</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+              <Link
+                href="/marketplace"
+                className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/25 text-white font-bold text-sm transition-colors"
+              >
+                <span>Explore Listings</span>
+              </Link>
+            </div>
+          </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 }

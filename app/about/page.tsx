@@ -1,118 +1,148 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Sprout, ShieldCheck, Target, HeartHandshake, Award, Users } from 'lucide-react';
+import Image from 'next/image';
+import {
+  Sprout,
+  ShieldCheck,
+  Target,
+  HeartHandshake,
+  ArrowRight,
+  CheckCircle2,
+} from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'About Us - KissanMandi Agricultural Marketplace',
-  description: 'Learn about KissanMandi, our history, and how we are empowering Pakistani farmers through transparent direct crop bidding.',
+  title: 'About Us — KissanMandi Agricultural Marketplace',
+  description:
+    'Learn about KissanMandi, our history, and how we empower Pakistani farmers through transparent direct crop trading.',
 };
 
 export default function AboutPage() {
   return (
-    <div className="max-w-4xl mx-auto px-4 py-12 space-y-16">
-      {/* Page Header */}
-      <div className="text-center space-y-4">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-[#8FD19E] text-xs font-bold text-[#2B2B2B]">
-          <Sprout className="w-4 h-4 text-[#6DBE82]" />
-          <span>About KissanMandi</span>
-        </div>
-        <h1 className="text-4xl sm:text-5xl font-black text-[#2B2B2B] tracking-tight">
-          Pioneering Fair Agricultural Trade
-        </h1>
-        <p className="text-lg text-gray-700 max-w-2xl mx-auto font-medium leading-relaxed">
-          KissanMandi was created to solve the most pervasive injustice in South Asian agriculture: the middleman monopoly that undervalues the grower and inflates costs for consumers.
-        </p>
-      </div>
-
-      {/* The Problem & Solution */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="bg-white p-8 rounded-3xl border border-gray-200 shadow-sm space-y-4">
-          <div className="w-12 h-12 rounded-xl bg-red-50 flex items-center justify-center text-red-600 font-bold">
-            01
+    <div className="w-full">
+      {/* Header */}
+      <section className="bg-gradient-to-b from-km-cream-100 to-white border-b border-km-green-200/70 py-14 sm:py-20">
+        <div className="km-container grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+          <div className="lg:col-span-6 space-y-5">
+            <span className="km-badge">
+              <Sprout className="w-3.5 h-3.5" />
+              <span>About KissanMandi</span>
+            </span>
+            <h1 className="text-4xl sm:text-5xl font-extrabold text-km-ink tracking-tight leading-tight">
+              Pioneering Fair Agricultural Trade in Pakistan
+            </h1>
+            <p className="text-base sm:text-lg text-km-ink-muted leading-relaxed">
+              KissanMandi was built to solve a long-standing challenge in South Asian agriculture: the middleman monopoly that undervalues farmers and inflates procurement costs for commercial buyers.
+            </p>
           </div>
-          <h3 className="text-2xl font-black text-[#2B2B2B]">
-            The Traditional Mandi Crisis
-          </h3>
-          <p className="text-sm text-gray-600 leading-relaxed font-medium">
-            For decades, smallholder farmers across Pakistan have been trapped in exploitative relationships with commission agents (arhtis). Without direct market access or price transparency, farmers have been forced to accept unilateral deductions, delayed payments, and arbitrary discounts on their hard-earned harvests.
-          </p>
-        </div>
-
-        <div className="bg-white p-8 rounded-3xl border border-[#8FD19E] shadow-sm space-y-4">
-          <div className="w-12 h-12 rounded-xl bg-[#8FD19E]/20 flex items-center justify-center text-[#2B2B2B] font-bold">
-            02
-          </div>
-          <h3 className="text-2xl font-black text-[#2B2B2B]">
-            The KissanMandi Breakthrough
-          </h3>
-          <p className="text-sm text-gray-600 leading-relaxed font-medium">
-            By combining a mobile-first, low-literacy Urdu interface with real-time auction mechanisms, KissanMandi allows any farmer with a basic smartphone to broadcast their crop directly to commercial wholesalers, mills, and exporters. The highest honest bid wins, and payment is settled directly upon delivery.
-          </p>
-        </div>
-      </div>
-
-      {/* Our Operating Principles */}
-      <div className="space-y-6">
-        <h2 className="text-3xl font-black text-[#2B2B2B] text-center tracking-tight">
-          Our Core Principles
-        </h2>
-
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-          <div className="bg-white p-6 rounded-2xl border border-gray-200 text-center space-y-3">
-            <div className="w-12 h-12 rounded-xl bg-[#FAF6EA] flex items-center justify-center mx-auto text-[#2B2B2B]">
-              <Target className="w-6 h-6" />
+          <div className="lg:col-span-6">
+            <div className="relative aspect-[16/10] rounded-3xl overflow-hidden shadow-km-lg border-4 border-white">
+              <Image
+                src="/images/tractor-farmland.jpg"
+                alt="Fertile agricultural farmland in Punjab, Pakistan"
+                fill
+                priority
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                className="object-cover"
+              />
             </div>
-            <h4 className="text-lg font-bold text-[#2B2B2B]">Producer First</h4>
-            <p className="text-xs text-gray-600 font-medium leading-relaxed">
-              Every decision, interface button, and policy is optimized to safeguard the farmer’s economic dignity and reserve price.
+          </div>
+        </div>
+      </section>
+
+      {/* Problem & Breakthrough */}
+      <section className="py-16 sm:py-20 bg-white">
+        <div className="km-container max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="bg-km-cream-100 p-8 rounded-3xl border border-km-cream-300 space-y-4">
+            <div className="w-12 h-12 rounded-2xl bg-white border border-km-cream-300 flex items-center justify-center text-km-ink font-extrabold">
+              01
+            </div>
+            <h2 className="text-2xl font-extrabold text-km-ink">
+              The Traditional Mandi Crisis
+            </h2>
+            <p className="text-sm sm:text-base text-km-ink-muted leading-relaxed">
+              For decades, smallholder farmers across Pakistan have depended on commission agents (arhtis). Without direct buyer access or open price discovery, growers have faced unilateral deductions, delayed settlements, and arbitrary discounts on their harvests.
             </p>
           </div>
 
-          <div className="bg-white p-6 rounded-2xl border border-gray-200 text-center space-y-3">
-            <div className="w-12 h-12 rounded-xl bg-[#FAF6EA] flex items-center justify-center mx-auto text-[#2B2B2B]">
-              <ShieldCheck className="w-6 h-6" />
+          <div className="bg-km-green-50 p-8 rounded-3xl border-2 border-km-green-300 shadow-km-sm space-y-4">
+            <div className="w-12 h-12 rounded-2xl bg-km-green-700 text-white flex items-center justify-center font-extrabold">
+              02
             </div>
-            <h4 className="text-lg font-bold text-[#2B2B2B]">Radical Transparency</h4>
-            <p className="text-xs text-gray-600 font-medium leading-relaxed">
-              All active bids, time windows, and quality parameters are publicly visible to verified participants in real time.
-            </p>
-          </div>
-
-          <div className="bg-white p-6 rounded-2xl border border-gray-200 text-center space-y-3">
-            <div className="w-12 h-12 rounded-xl bg-[#FAF6EA] flex items-center justify-center mx-auto text-[#2B2B2B]">
-              <HeartHandshake className="w-6 h-6" />
-            </div>
-            <h4 className="text-lg font-bold text-[#2B2B2B]">Universal Inclusion</h4>
-            <p className="text-xs text-gray-600 font-medium leading-relaxed">
-              Designed from the ground up for low-literacy users with high-contrast buttons, simple steps, and full native Urdu localization.
+            <h2 className="text-2xl font-extrabold text-km-ink">
+              The KissanMandi Breakthrough
+            </h2>
+            <p className="text-sm sm:text-base text-km-ink-muted leading-relaxed">
+              By pairing a simple, Urdu-friendly mobile experience with transparent bidding, KissanMandi enables any farmer with a smartphone to reach mills, wholesalers, and exporters directly—keeping 100% of their negotiated price.
             </p>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* CTA Box */}
-      <div className="bg-[#FAF6EA] border border-[#8FD19E] rounded-3xl p-8 text-center space-y-4">
-        <h3 className="text-2xl font-bold text-[#2B2B2B]">
-          Be Part of the Agricultural Revolution
-        </h3>
-        <p className="text-sm text-gray-700 max-w-lg mx-auto font-medium">
-          Whether you are a grower with 5 maunds or a mill looking for 500 tons, KissanMandi delivers honest, direct agricultural commerce.
-        </p>
-        <div className="pt-2 flex flex-col sm:flex-row gap-3 justify-center">
-          <Link
-            href="/register"
-            className="px-6 py-3 bg-[#8FD19E] hover:bg-[#6DBE82] text-[#2B2B2B] font-bold rounded-xl text-sm transition-colors"
-          >
-            Create an Account
-          </Link>
-          <Link
-            href="/contact"
-            className="px-6 py-3 bg-white border border-gray-300 hover:bg-gray-50 text-[#2B2B2B] font-bold rounded-xl text-sm transition-colors"
-          >
-            Contact Team
-          </Link>
+      {/* Operating Principles */}
+      <section className="py-16 sm:py-20 bg-km-cream-100 border-t border-km-cream-300/70">
+        <div className="km-container max-w-5xl space-y-10">
+          <div className="text-center space-y-2">
+            <span className="km-badge">Our Foundation</span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-km-ink">
+              Our Core Principles
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            {[
+              {
+                icon: Target,
+                title: 'Producer First',
+                desc: 'Every feature, interface control, and reserve-price rule is built to protect the farmer’s economic dignity.',
+              },
+              {
+                icon: ShieldCheck,
+                title: 'Radical Transparency',
+                desc: 'Active prices, harvest volumes, farm locations, and photo verifications are visible to participants in real time.',
+              },
+              {
+                icon: HeartHandshake,
+                title: 'Universal Inclusion',
+                desc: 'Crafted from the ground up with large buttons, clear steps, and complete native Urdu RTL support.',
+              },
+            ].map((p, idx) => {
+              const Icon = p.icon;
+              return (
+                <div key={idx} className="km-card km-card-hover p-7 text-center space-y-3.5">
+                  <div className="w-12 h-12 rounded-2xl bg-km-green-100 text-km-green-800 flex items-center justify-center mx-auto">
+                    <Icon className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-lg font-extrabold text-km-ink">{p.title}</h3>
+                  <p className="text-sm text-km-ink-muted leading-relaxed">{p.desc}</p>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* CTA Box */}
+          <div className="bg-km-green-800 text-white rounded-3xl p-8 sm:p-10 text-center space-y-5 shadow-km-md">
+            <h3 className="text-2xl sm:text-3xl font-extrabold text-white">
+              Be Part of the Direct Agricultural Movement
+            </h3>
+            <p className="text-sm sm:text-base text-km-green-100 max-w-lg mx-auto">
+              Whether you are a grower with 5 maunds or a commercial mill sourcing 500 tons, KissanMandi delivers honest, direct trade.
+            </p>
+            <div className="flex flex-wrap justify-center gap-3 pt-1">
+              <Link href="/register" className="km-btn-light px-7 py-3.5">
+                <span>Create Free Account</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+              <Link
+                href="/marketplace"
+                className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/25 text-white font-bold text-sm transition-colors"
+              >
+                <CheckCircle2 className="w-4 h-4" />
+                <span>Explore Marketplace</span>
+              </Link>
+            </div>
+          </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 }

@@ -1,7 +1,15 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Mail, Phone, MapPin, Send, CheckCircle2, AlertCircle, Clock } from 'lucide-react';
+import {
+  Mail,
+  Phone,
+  MapPin,
+  Send,
+  CheckCircle2,
+  AlertCircle,
+  Clock,
+} from 'lucide-react';
 import { API_BASE } from '@/lib/api';
 
 export default function ContactPage() {
@@ -22,7 +30,9 @@ export default function ContactPage() {
     setError('');
 
     if (!name || !message || (!phone && !email)) {
-      setError('Please provide your name, message, and at least one contact method (phone or email).');
+      setError(
+        'Please provide your name, message, and at least one contact method (phone or email).'
+      );
       return;
     }
 
@@ -43,210 +53,251 @@ export default function ContactPage() {
 
       const data = await res.json();
       if (!res.ok || !data.success) {
-        throw new Error(data.error?.message || data.message || 'Failed to submit inquiry.');
+        throw new Error(
+          data.error?.message || data.message || 'Failed to submit inquiry.'
+        );
       }
 
       setReferenceId(data.referenceId || 'INQ-' + Date.now().toString().slice(-6));
       setSubmitted(true);
-    } catch (err: any) {
-      setError(err.message || 'Something went wrong. Please try again.');
+    } catch (err: unknown) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : 'Something went wrong. Please try again.'
+      );
     } finally {
       setSubmitting(false);
     }
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-12 space-y-12">
+    <div className="w-full">
       {/* Header */}
-      <div className="text-center space-y-3">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-[#8FD19E] text-xs font-bold text-[#2B2B2B]">
-          <Mail className="w-4 h-4 text-[#6DBE82]" />
-          <span>Support & Field Inquiries</span>
+      <section className="bg-gradient-to-b from-km-cream-100 to-white border-b border-km-green-200/70 py-14 sm:py-16">
+        <div className="km-container max-w-4xl text-center space-y-4">
+          <span className="km-badge">
+            <Mail className="w-3.5 h-3.5" />
+            <span>Support & Field Inquiries</span>
+          </span>
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-km-ink tracking-tight">
+            Contact KissanMandi
+          </h1>
+          <p className="text-base sm:text-lg text-km-ink-muted max-w-2xl mx-auto">
+            Questions about produce listings, competitive bidding, or commercial partnerships? Our regional agricultural support team is ready to assist.
+          </p>
         </div>
-        <h1 className="text-4xl sm:text-5xl font-black text-[#2B2B2B] tracking-tight">
-          Contact KissanMandi
-        </h1>
-        <p className="text-lg text-gray-700 max-w-xl mx-auto font-medium">
-          Have questions regarding produce listing, bidding auctions, or partnership opportunities? Our regional agricultural support team is here to assist.
-        </p>
-      </div>
+      </section>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {/* Contact Information Cards */}
-        <div className="space-y-4 md:col-span-1">
-          <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-2">
-            <div className="w-10 h-10 rounded-xl bg-[#FAF6EA] border border-[#8FD19E] flex items-center justify-center text-[#2B2B2B]">
-              <Phone className="w-5 h-5" />
-            </div>
-            <h3 className="text-base font-bold text-[#2B2B2B]">Toll-Free Helpline</h3>
-            <p className="text-sm font-black text-[#6DBE82]">0800-KISSAN (547726)</p>
-            <p className="text-xs text-gray-500 font-medium">Mon-Sat, 7:00 AM - 9:00 PM PKT</p>
-          </div>
-
-          <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-2">
-            <div className="w-10 h-10 rounded-xl bg-[#FAF6EA] border border-[#8FD19E] flex items-center justify-center text-[#2B2B2B]">
-              <Mail className="w-5 h-5" />
-            </div>
-            <h3 className="text-base font-bold text-[#2B2B2B]">Email Inquiries</h3>
-            <p className="text-sm font-bold text-[#2B2B2B]">support@kissanmandi.pk</p>
-            <p className="text-xs text-gray-500 font-medium">Responses within 2 business hours</p>
-          </div>
-
-          <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-2">
-            <div className="w-10 h-10 rounded-xl bg-[#FAF6EA] border border-[#8FD19E] flex items-center justify-center text-[#2B2B2B]">
-              <MapPin className="w-5 h-5" />
-            </div>
-            <h3 className="text-base font-bold text-[#2B2B2B]">Regional Field Hubs</h3>
-            <p className="text-xs text-gray-600 font-medium leading-relaxed">
-              Main Secretariat: Agricultural Trade Complex, Canal Road, Lahore.
-              Regional Hubs: Multan, Faisalabad, Sahiwal, and Rahim Yar Khan.
-            </p>
-          </div>
-        </div>
-
-        {/* Interactive Inquiry Form */}
-        <div className="md:col-span-2 bg-white p-6 md:p-8 rounded-3xl border border-gray-200 shadow-sm">
-          {submitted ? (
-            <div className="text-center py-12 space-y-4">
-              <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto text-green-700">
-                <CheckCircle2 className="w-8 h-8" />
+      <section className="py-14 sm:py-20 bg-km-cream-100/50">
+        <div className="km-container max-w-5xl grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          {/* Contact Information Cards */}
+          <div className="lg:col-span-4 space-y-4">
+            <div className="km-card p-6 space-y-2.5">
+              <div className="w-11 h-11 rounded-xl bg-km-green-100 text-km-green-800 flex items-center justify-center">
+                <Phone className="w-5 h-5" />
               </div>
-              <h2 className="text-2xl font-black text-[#2B2B2B]">
-                Inquiry Successfully Dispatched
+              <h2 className="text-base font-extrabold text-km-ink">
+                Toll-Free Helpline
               </h2>
-              <p className="text-sm text-gray-600 max-w-md mx-auto font-medium">
-                Thank you for getting in touch. Your support reference ID is:
+              <p className="text-base font-extrabold text-km-green-800">
+                0800-KISSAN (547726)
               </p>
-              <div className="inline-block px-4 py-2 bg-[#FAF6EA] border border-[#8FD19E] rounded-xl font-mono font-bold text-lg text-[#2B2B2B]">
-                {referenceId}
-              </div>
-              <p className="text-xs text-gray-500">
-                A regional agricultural coordinator will contact you via phone or email shortly.
+              <p className="text-xs font-medium text-km-ink-muted flex items-center gap-1.5">
+                <Clock className="w-3.5 h-3.5 text-km-green-600" />
+                <span>Mon–Sat, 7:00 AM – 9:00 PM PKT</span>
               </p>
-              <div className="pt-4">
-                <button
-                  onClick={() => {
-                    setSubmitted(false);
-                    setMessage('');
-                    setSubject('');
-                  }}
-                  className="px-6 py-2.5 bg-[#FAF6EA] border border-gray-300 rounded-xl text-sm font-bold text-[#2B2B2B] hover:bg-gray-100 transition-colors"
-                >
-                  Send Another Inquiry
-                </button>
-              </div>
             </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <h2 className="text-2xl font-black text-[#2B2B2B] mb-2">
-                Send an Official Inquiry
+
+            <div className="km-card p-6 space-y-2.5">
+              <div className="w-11 h-11 rounded-xl bg-km-green-100 text-km-green-800 flex items-center justify-center">
+                <Mail className="w-5 h-5" />
+              </div>
+              <h2 className="text-base font-extrabold text-km-ink">
+                Email Inquiries
               </h2>
+              <p className="text-sm font-bold text-km-green-800">
+                support@kissanmandi.pk
+              </p>
+              <p className="text-xs font-medium text-km-ink-muted">
+                Responses within 2 business hours
+              </p>
+            </div>
 
-              {error && (
-                <div className="p-3 bg-red-50 border border-red-200 rounded-xl flex items-center gap-2 text-xs font-bold text-red-700">
-                  <AlertCircle className="w-4 h-4 flex-shrink-0" />
-                  <span>{error}</span>
+            <div className="km-card p-6 space-y-2.5">
+              <div className="w-11 h-11 rounded-xl bg-km-green-100 text-km-green-800 flex items-center justify-center">
+                <MapPin className="w-5 h-5" />
+              </div>
+              <h2 className="text-base font-extrabold text-km-ink">
+                Regional Field Hubs
+              </h2>
+              <p className="text-xs font-medium text-km-ink-muted leading-relaxed">
+                Lahore Trade Corridor, Multan Agricultural Hub, Faisalabad Grain Desk, and Mardan Horticulture Desk.
+              </p>
+            </div>
+          </div>
+
+          {/* Inquiry Form */}
+          <div className="lg:col-span-8">
+            <div className="km-card p-6 sm:p-10">
+              {submitted ? (
+                <div className="py-10 text-center space-y-4">
+                  <div className="w-16 h-16 rounded-2xl bg-km-green-100 text-km-green-700 flex items-center justify-center mx-auto">
+                    <CheckCircle2 className="w-9 h-9" />
+                  </div>
+                  <h2 className="text-2xl font-extrabold text-km-ink">
+                    Inquiry Received
+                  </h2>
+                  <p className="text-sm text-km-ink-muted max-w-md mx-auto">
+                    Thank you, <strong>{name}</strong>. Your message has been logged with our regional support team.
+                  </p>
+                  <div className="inline-block px-4 py-2 rounded-xl bg-km-cream-100 border border-km-green-300 text-xs font-bold text-km-green-800">
+                    Reference ID: {referenceId}
+                  </div>
+                  <div className="pt-4">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSubmitted(false);
+                        setName('');
+                        setPhone('');
+                        setEmail('');
+                        setSubject('');
+                        setMessage('');
+                      }}
+                      className="km-btn-outline"
+                    >
+                      Send Another Inquiry
+                    </button>
+                  </div>
                 </div>
-              )}
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-5">
+                  <div>
+                    <h2 className="text-xl font-extrabold text-km-ink">
+                      Send Us a Message
+                    </h2>
+                    <p className="text-sm text-km-ink-muted mt-0.5">
+                      Fill in your contact information and we will reach out promptly.
+                    </p>
+                  </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-bold text-[#2B2B2B] uppercase mb-1">
-                    Full Name *
-                  </label>
-                  <input
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    required
-                    placeholder="e.g. Tariq Mehmood"
-                    className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#8FD19E]"
-                  />
-                </div>
+                  {error && (
+                    <div
+                      role="alert"
+                      className="p-4 rounded-xl bg-km-cream-200 border border-km-ink/30 text-km-ink text-sm font-semibold flex items-start gap-2.5"
+                    >
+                      <AlertCircle className="w-5 h-5 text-km-ink flex-shrink-0 mt-0.5" />
+                      <span>{error}</span>
+                    </div>
+                  )}
 
-                <div>
-                  <label className="block text-xs font-bold text-[#2B2B2B] uppercase mb-1">
-                    User Role *
-                  </label>
-                  <select
-                    value={role}
-                    onChange={(e: any) => setRole(e.target.value)}
-                    className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm bg-white focus:outline-none focus:border-[#8FD19E]"
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label htmlFor="contact-name" className="block text-xs font-bold text-km-ink mb-1.5">
+                        Full Name *
+                      </label>
+                      <input
+                        id="contact-name"
+                        type="text"
+                        required
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        placeholder="e.g. Muhammad Usman"
+                        className="km-input"
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="contact-role" className="block text-xs font-bold text-km-ink mb-1.5">
+                        I am a
+                      </label>
+                      <select
+                        id="contact-role"
+                        value={role}
+                        onChange={(e) =>
+                          setRole(e.target.value as 'farmer' | 'buyer' | 'other')
+                        }
+                        className="km-input"
+                      >
+                        <option value="farmer">Farmer / Grower</option>
+                        <option value="buyer">Commercial Buyer / Mill</option>
+                        <option value="other">Partner / Other</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label htmlFor="contact-phone" className="block text-xs font-bold text-km-ink mb-1.5">
+                        Phone Number
+                      </label>
+                      <input
+                        id="contact-phone"
+                        type="tel"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        placeholder="03001234567"
+                        className="km-input"
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="contact-email" className="block text-xs font-bold text-km-ink mb-1.5">
+                        Email Address
+                      </label>
+                      <input
+                        id="contact-email"
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="name@example.com"
+                        className="km-input"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label htmlFor="contact-subject" className="block text-xs font-bold text-km-ink mb-1.5">
+                      Subject
+                    </label>
+                    <input
+                      id="contact-subject"
+                      type="text"
+                      value={subject}
+                      onChange={(e) => setSubject(e.target.value)}
+                      placeholder="e.g. Bulk Wheat Procurement Support"
+                      className="km-input"
+                    />
+                  </div>
+
+                  <div>
+                    <label htmlFor="contact-message" className="block text-xs font-bold text-km-ink mb-1.5">
+                      Message *
+                    </label>
+                    <textarea
+                      id="contact-message"
+                      rows={4}
+                      required
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      placeholder="Describe how our team can help you..."
+                      className="km-input"
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="w-full km-btn-primary py-3.5 text-base"
                   >
-                    <option value="farmer">Agricultural Farmer (Seller)</option>
-                    <option value="buyer">Commercial Buyer / Processor</option>
-                    <option value="other">Institutional / Media / Partner</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-bold text-[#2B2B2B] uppercase mb-1">
-                    Phone Number
-                  </label>
-                  <input
-                    type="tel"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    placeholder="e.g. 03001234567"
-                    className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#8FD19E]"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-[#2B2B2B] uppercase mb-1">
-                    Email Address
-                  </label>
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="e.g. name@domain.com"
-                    className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#8FD19E]"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-[#2B2B2B] uppercase mb-1">
-                  Subject
-                </label>
-                <input
-                  type="text"
-                  value={subject}
-                  onChange={(e) => setSubject(e.target.value)}
-                  placeholder="e.g. Question about bulk wheat listing or bidding"
-                  className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#8FD19E]"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-[#2B2B2B] uppercase mb-1">
-                  Message *
-                </label>
-                <textarea
-                  rows={4}
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  required
-                  placeholder="Write your inquiry or question here..."
-                  className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#8FD19E]"
-                />
-              </div>
-
-              <button
-                type="submit"
-                disabled={submitting}
-                className="w-full py-3.5 bg-[#8FD19E] hover:bg-[#6DBE82] text-[#2B2B2B] font-bold text-base rounded-xl shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
-              >
-                <Send className="w-4 h-4" />
-                <span>{submitting ? 'Submitting...' : 'Submit Inquiry'}</span>
-              </button>
-            </form>
-          )}
+                    <Send className="w-4 h-4" />
+                    <span>{submitting ? 'Submitting Inquiry...' : 'Submit Inquiry'}</span>
+                  </button>
+                </form>
+              )}
+            </div>
+          </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 }

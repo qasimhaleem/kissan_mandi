@@ -1,22 +1,19 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 import {
-  Upload,
+  Camera,
   X,
   MapPin,
-  CheckCircle,
+  CheckCircle2,
   AlertCircle,
   ArrowLeft,
   Package,
-  Layers,
-  DollarSign,
-  Tag,
-  Info,
+  Coins,
+  Upload,
 } from 'lucide-react';
 import { API_BASE } from '@/lib/api';
 
@@ -66,8 +63,8 @@ const PAKISTAN_DISTRICTS = [
 
 export default function AddProductPage() {
   const { user, token } = useAuth();
-  const { t } = useLanguage();
-  const router = useRouter();
+  const { locale, t } = useLanguage();
+  const isUrdu = locale === 'ur';
 
   const [productName, setProductName] = useState('');
   const [category, setCategory] = useState(PRODUCT_CATEGORIES[0]);
@@ -77,18 +74,28 @@ export default function AddProductPage() {
   const [quantity, setQuantity] = useState('');
   const [minOrder, setMinOrder] = useState('10');
   const [district, setDistrict] = useState(user?.district || 'Mardan');
-  const [address, setAddress] = useState(user?.farmerProfile?.farmAddress || '');
+  const [address, setAddress] = useState(
+    user?.farmerProfile?.farmAddress || ''
+  );
   const [coords, setCoords] = useState<{ lat: number; lng: number }>(
     user?.coordinates || { lat: 34.1989, lng: 72.0404 }
   );
 
-  // Multiple photos state (up to 5 photos)
   const [photos, setPhotos] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
 
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
-  const [createdProduct, setCreatedProduct] = useState<any>(null);
+  const [createdProduct, setCreatedProduct] = useState<{
+    _id: string;
+    slug?: string;
+    title: string;
+    category: string;
+    price: number;
+    unit: string;
+    quantity: number;
+    location?: { district?: string };
+  } | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -97,15 +104,16 @@ export default function AddProductPage() {
     const filesArray = Array.from(e.target.files);
 
     if (photos.length + filesArray.length > 5) {
-      setError('You can upload a maximum of 5 product photos.');
+      setError(
+        isUrdu
+          ? 'زیادہ سے زیادہ ۵ تصاویر اپ لوڈ کی جا سکتی ہیں۔'
+          : 'You can upload a maximum of 5 product photos.'
+      );
       return;
     }
 
-    const newPhotos = [...photos, ...filesArray];
-    const newPreviews = [...previews, ...filesArray.map((f) => URL.createObjectURL(f))];
-
-    setPhotos(newPhotos);
-    setPreviews(newPreviews);
+    setPhotos([...photos, ...filesArray]);
+    setPreviews([...previews, ...filesArray.map((f) => URL.createObjectURL(f))]);
     setError('');
   };
 
@@ -122,10 +130,12 @@ export default function AddProductPage() {
             lat: pos.coords.latitude,
             lng: pos.coords.longitude,
           });
-          alert('GPS location recorded.');
+          alert(t('locationDetected'));
         },
         () => {
-          alert('Unable to retrieve GPS coordinates. Defaulting to district center.');
+          alert(
+            'Unable to retrieve GPS coordinates. Defaulting to selected district.'
+          );
         }
       );
     }
@@ -136,27 +146,49 @@ export default function AddProductPage() {
     setError('');
 
     if (!productName.trim()) {
-      setError('Please provide a product title/name.');
+      setError(
+        isUrdu ? 'براہ کرم فصل کا نام درج کریں۔' : 'Please provide a product title/name.'
+      );
       return;
     }
     if (!description.trim()) {
-      setError('Please provide a short description of the crop.');
+      setError(
+        isUrdu
+          ? 'براہ کرم فصل کی مختصر تفصیل درج کریں۔'
+          : 'Please provide a short description of the crop.'
+      );
       return;
     }
     if (!price || Number(price) <= 0) {
-      setError('Please enter a valid price in PKR.');
+      setError(
+        isUrdu
+          ? 'براہ کرم درست قیمت (PKR) درج کریں۔'
+          : 'Please enter a valid price in PKR.'
+      );
       return;
     }
     if (!quantity || Number(quantity) <= 0) {
-      setError('Please enter the available harvest quantity.');
+      setError(
+        isUrdu
+          ? 'براہ کرم دستیاب مقدار درج کریں۔'
+          : 'Please enter the available harvest quantity.'
+      );
       return;
     }
     if (!minOrder || Number(minOrder) <= 0) {
-      setError('Please enter a valid minimum order quantity.');
+      setError(
+        isUrdu
+          ? 'براہ کرم کم از کم آرڈر کی مقدار درج کریں۔'
+          : 'Please enter a valid minimum order quantity.'
+      );
       return;
     }
     if (photos.length === 0) {
-      setError('Please upload at least one real photo of the produce.');
+      setError(
+        isUrdu
+          ? 'براہ کرم فصل کی کم از کم ایک حقیقی تصویر اپ لوڈ کریں۔'
+          : 'Please upload at least one real photo of the produce.'
+      );
       return;
     }
 
@@ -195,7 +227,7 @@ export default function AddProductPage() {
       } else {
         setError(data.error?.message || 'Failed to publish product.');
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error listing produce:', err);
       setError('Network communication error while uploading produce.');
     } finally {
@@ -205,54 +237,57 @@ export default function AddProductPage() {
 
   if (createdProduct) {
     return (
-      <div className="max-w-2xl mx-auto px-4 py-12">
-        <div className="bg-white border-2 border-[#8FD19E] rounded-3xl p-8 shadow-sm text-center space-y-6">
-          <div className="w-16 h-16 bg-[#8FD19E]/20 text-[#2B2B2B] rounded-2xl flex items-center justify-center mx-auto">
-            <CheckCircle className="w-10 h-10 text-[#6DBE82]" />
+      <div className="km-container max-w-2xl py-12">
+        <div className="bg-white border-2 border-km-green-300 rounded-3xl p-8 sm:p-10 shadow-km-md text-center space-y-6">
+          <div className="w-16 h-16 bg-km-green-100 text-km-green-700 rounded-2xl flex items-center justify-center mx-auto">
+            <CheckCircle2 className="w-10 h-10" />
           </div>
 
-          <div>
-            <h1 className="text-2xl font-black text-[#2B2B2B]">Produce Successfully Published</h1>
-            <p className="text-sm text-gray-600 mt-2">
-              Your listing <span className="font-bold text-[#2B2B2B]">{createdProduct.title}</span> is now active in the marketplace for commercial buyers.
+          <div className="space-y-1.5">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-km-ink">
+              {t('postSuccessTitle')}
+            </h1>
+            <p className="text-base text-km-ink-muted">
+              {isUrdu
+                ? `آپ کی فصل "${createdProduct.title}" اب مارکیٹ پلیس پر فعال ہے۔`
+                : `Your listing "${createdProduct.title}" is now live in the marketplace for commercial buyers.`}
             </p>
           </div>
 
-          <div className="bg-[#FAF6EA] p-4 rounded-2xl text-left text-sm space-y-2 border border-[#8FD19E]/40">
+          <div className="bg-km-cream-100 p-5 rounded-2xl text-start text-sm space-y-2.5 border border-km-cream-300">
             <div className="flex justify-between">
-              <span className="text-gray-500 font-medium">Category:</span>
-              <span className="font-bold text-[#2B2B2B]">{createdProduct.category}</span>
+              <span className="text-km-ink-muted font-medium">Category:</span>
+              <span className="font-bold text-km-ink">{createdProduct.category}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-500 font-medium">Price:</span>
-              <span className="font-bold text-[#2B2B2B]">PKR {createdProduct.price} / {createdProduct.unit}</span>
+              <span className="text-km-ink-muted font-medium">Price:</span>
+              <span className="font-extrabold text-km-green-800">
+                PKR {createdProduct.price} / {createdProduct.unit}
+              </span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-500 font-medium">Quantity Available:</span>
-              <span className="font-bold text-[#2B2B2B]">{createdProduct.quantity} {createdProduct.unit}</span>
+              <span className="text-km-ink-muted font-medium">Quantity:</span>
+              <span className="font-bold text-km-ink">
+                {createdProduct.quantity} {createdProduct.unit}
+              </span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-500 font-medium">Minimum Order:</span>
-              <span className="font-bold text-[#2B2B2B]">{createdProduct.minOrder} {createdProduct.unit}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-500 font-medium">Location:</span>
-              <span className="font-bold text-[#2B2B2B]">{createdProduct.location?.district}</span>
+              <span className="text-km-ink-muted font-medium">Location:</span>
+              <span className="font-bold text-km-ink">
+                {createdProduct.location?.district}
+              </span>
             </div>
           </div>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
-            <Link
-              href="/farmer"
-              className="w-full sm:w-auto px-6 py-3 rounded-xl border-2 border-gray-200 text-sm font-bold text-[#2B2B2B] hover:border-[#8FD19E] hover:bg-[#FAF6EA] transition-all"
-            >
-              Back to Farmer Portal
+            <Link href="/farmer" className="w-full sm:w-auto km-btn-outline py-3.5 text-base">
+              {t('viewListings')}
             </Link>
             <Link
               href={`/marketplace/products/${createdProduct.slug || createdProduct._id}`}
-              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#8FD19E] hover:bg-[#6DBE82] text-sm font-black text-[#2B2B2B] shadow-sm transition-all"
+              className="w-full sm:w-auto km-btn-primary py-3.5 text-base"
             >
-              View in Marketplace
+              {isUrdu ? 'مارکیٹ میں دیکھیں' : 'View in Marketplace'}
             </Link>
           </div>
         </div>
@@ -261,62 +296,79 @@ export default function AddProductPage() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8 space-y-6">
+    <div className="km-container max-w-3xl py-8 sm:py-10 space-y-6">
       <div className="flex items-center gap-4">
         <Link
           href="/farmer"
-          className="p-2 rounded-xl border border-gray-200 hover:border-[#8FD19E] text-gray-600 hover:text-[#2B2B2B] transition-colors"
+          aria-label="Back to Farmer Portal"
+          className="p-3 rounded-xl border border-km-green-200 bg-white hover:bg-km-green-50 text-km-green-800 transition-colors"
         >
-          <ArrowLeft className="w-5 h-5" />
+          <ArrowLeft className="w-5 h-5 rtl:rotate-180" />
         </Link>
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-[#2B2B2B]">
-            Add Product Listing
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-km-ink">
+            {t('postProduce')}
           </h1>
-          <p className="text-sm text-gray-500">
-            Publish your crop inventory to the national agricultural marketplace.
+          <p className="text-sm sm:text-base text-km-ink-muted">
+            {isUrdu
+              ? 'اپنی فصل کی تفصیل اور ۲ تصاویر شامل کر کے براہِ راست منڈی میں پیش کریں۔'
+              : 'Enter your crop details and upload clear farm photos to reach verified buyers.'}
           </p>
         </div>
       </div>
 
       {error && (
-        <div className="p-4 bg-red-50 border border-red-200 rounded-2xl flex items-center gap-3 text-red-800 text-sm font-medium">
-          <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
+        <div
+          role="alert"
+          className="p-4 bg-km-cream-200 border border-km-ink/30 rounded-2xl flex items-center gap-3 text-km-ink text-sm font-bold"
+        >
+          <AlertCircle className="w-5 h-5 flex-shrink-0" />
           <span>{error}</span>
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="bg-white border-2 border-gray-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
-        {/* Section 1: Product Basics */}
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white border-2 border-km-green-200 rounded-3xl p-6 sm:p-8 shadow-km-sm space-y-8"
+      >
+        {/* Step 1: Produce Details */}
         <div className="space-y-4">
-          <h2 className="text-base font-black text-[#2B2B2B] flex items-center gap-2 border-b border-gray-100 pb-2">
-            <Package className="w-4 h-4 text-[#8FD19E]" />
-            <span>Product Identification</span>
+          <h2 className="text-lg font-extrabold text-km-ink flex items-center gap-2 border-b border-km-green-100 pb-3">
+            <Package className="w-5 h-5 text-km-green-700" />
+            <span>{isUrdu ? '۱۔ فصل کی تفصیل' : '1. Produce Details'}</span>
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold text-[#2B2B2B] mb-1">
-                Product Name <span className="text-red-500">*</span>
+              <label
+                htmlFor="post-name"
+                className="block text-sm font-bold text-km-ink mb-1.5"
+              >
+                {t('cropName')} *
               </label>
               <input
+                id="post-name"
                 type="text"
                 required
                 value={productName}
                 onChange={(e) => setProductName(e.target.value)}
-                placeholder="e.g. Tomatoes"
-                className="w-full px-4 py-3 rounded-xl border border-gray-300 text-sm font-semibold focus:outline-none focus:border-[#8FD19E]"
+                placeholder={isUrdu ? 'مثلاً: تازہ ٹماٹر یا گندم' : 'e.g. Fresh Tomatoes'}
+                className="km-input py-3.5 text-base"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#2B2B2B] mb-1">
-                Category <span className="text-red-500">*</span>
+              <label
+                htmlFor="post-category"
+                className="block text-sm font-bold text-km-ink mb-1.5"
+              >
+                {isUrdu ? 'زمرہ (Category)' : 'Category'} *
               </label>
               <select
+                id="post-category"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-gray-300 text-sm font-semibold focus:outline-none focus:border-[#8FD19E] bg-white"
+                className="km-input py-3.5 text-base"
               >
                 {PRODUCT_CATEGORIES.map((cat) => (
                   <option key={cat} value={cat}>
@@ -328,36 +380,48 @@ export default function AddProductPage() {
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-[#2B2B2B] mb-1">
-              Description <span className="text-red-500">*</span>
+            <label
+              htmlFor="post-desc"
+              className="block text-sm font-bold text-km-ink mb-1.5"
+            >
+              {isUrdu ? 'فصل کا معیار اور تفصیل' : 'Description'} *
             </label>
             <textarea
+              id="post-desc"
               required
               rows={3}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="e.g. Fresh farm tomatoes, grade A harvest, sorted and ready for wholesale dispatch."
-              className="w-full px-4 py-3 rounded-xl border border-gray-300 text-sm focus:outline-none focus:border-[#8FD19E]"
+              placeholder={
+                isUrdu
+                  ? 'مثلاً: تازہ کٹائی، بہترین گریڈ اے معیار، فوری ترسیل کے لیے تیار'
+                  : 'e.g. Grade A farm harvest, freshly sorted and packed for dispatch.'
+              }
+              className="km-input text-base"
             />
           </div>
         </div>
 
-        {/* Section 2: Pricing & Volume */}
+        {/* Step 2: Price & Quantity */}
         <div className="space-y-4">
-          <h2 className="text-base font-black text-[#2B2B2B] flex items-center gap-2 border-b border-gray-100 pb-2">
-            <DollarSign className="w-4 h-4 text-[#8FD19E]" />
-            <span>Pricing & Harvest Volume</span>
+          <h2 className="text-lg font-extrabold text-km-ink flex items-center gap-2 border-b border-km-green-100 pb-3">
+            <Coins className="w-5 h-5 text-km-green-700" />
+            <span>{isUrdu ? '۲۔ قیمت اور مقدار' : '2. Pricing & Volume'}</span>
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="block text-xs font-bold text-[#2B2B2B] mb-1">
-                Unit of Measure <span className="text-red-500">*</span>
+              <label
+                htmlFor="post-unit"
+                className="block text-sm font-bold text-km-ink mb-1.5"
+              >
+                {t('unit')} *
               </label>
               <select
+                id="post-unit"
                 value={unit}
                 onChange={(e) => setUnit(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-gray-300 text-sm font-semibold focus:outline-none focus:border-[#8FD19E] bg-white"
+                className="km-input py-3.5 text-base"
               >
                 {PRODUCT_UNITS.map((u) => (
                   <option key={u} value={u}>
@@ -368,83 +432,111 @@ export default function AddProductPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#2B2B2B] mb-1">
-                Price (PKR per {unit}) <span className="text-red-500">*</span>
+              <label
+                htmlFor="post-price"
+                className="block text-sm font-bold text-km-ink mb-1.5"
+              >
+                {isUrdu ? `قیمت (PKR فی ${unit})` : `Price (PKR / ${unit})`} *
               </label>
               <input
+                id="post-price"
                 type="number"
                 required
                 min="1"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
-                placeholder="e.g. 120"
-                className="w-full px-4 py-3 rounded-xl border border-gray-300 text-sm font-semibold focus:outline-none focus:border-[#8FD19E]"
+                placeholder="120"
+                className="km-input py-3.5 text-base"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#2B2B2B] mb-1">
-                Total Available Quantity <span className="text-red-500">*</span>
+              <label
+                htmlFor="post-qty"
+                className="block text-sm font-bold text-km-ink mb-1.5"
+              >
+                {t('quantity')} *
               </label>
               <input
+                id="post-qty"
                 type="number"
                 required
                 min="1"
                 value={quantity}
                 onChange={(e) => setQuantity(e.target.value)}
-                placeholder="e.g. 2000"
-                className="w-full px-4 py-3 rounded-xl border border-gray-300 text-sm font-semibold focus:outline-none focus:border-[#8FD19E]"
+                placeholder="2000"
+                className="km-input py-3.5 text-base"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold text-[#2B2B2B] mb-1">
-                Minimum Order Quantity ({unit}) <span className="text-red-500">*</span>
+              <label
+                htmlFor="post-min-order"
+                className="block text-sm font-bold text-km-ink mb-1.5"
+              >
+                {isUrdu
+                  ? `کم از کم آرڈر (${unit})`
+                  : `Minimum Order (${unit})`}{' '}
+                *
               </label>
               <input
+                id="post-min-order"
                 type="number"
                 required
                 min="1"
                 value={minOrder}
                 onChange={(e) => setMinOrder(e.target.value)}
-                placeholder="e.g. 100"
-                className="w-full px-4 py-3 rounded-xl border border-gray-300 text-sm font-semibold focus:outline-none focus:border-[#8FD19E]"
+                placeholder="100"
+                className="km-input py-3.5 text-base"
               />
-              <span className="text-xs text-gray-500 mt-1 block">
-                Lowest order size you are willing to fulfill.
-              </span>
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#2B2B2B] mb-1">
-                Availability
-              </label>
-              <div className="h-[46px] px-4 rounded-xl border border-gray-200 bg-[#FAF6EA] flex items-center justify-between">
-                <span className="text-sm font-bold text-[#2B2B2B]">Active Listing</span>
-                <span className="w-2.5 h-2.5 rounded-full bg-[#8FD19E]"></span>
+              <span className="block text-sm font-bold text-km-ink mb-1.5">
+                {isUrdu ? 'اسٹیٹس' : 'Availability'}
+              </span>
+              <div className="h-[50px] px-4 rounded-xl border border-km-green-200 bg-km-green-50 flex items-center justify-between">
+                <span className="text-sm font-bold text-km-green-800">
+                  {isUrdu ? 'فوری فعال لسٹنگ' : 'Active Immediately'}
+                </span>
+                <span className="w-2.5 h-2.5 rounded-full bg-km-green-700" />
               </div>
             </div>
           </div>
         </div>
 
-        {/* Section 3: Location */}
+        {/* Step 3: Location */}
         <div className="space-y-4">
-          <h2 className="text-base font-black text-[#2B2B2B] flex items-center gap-2 border-b border-gray-100 pb-2">
-            <MapPin className="w-4 h-4 text-[#8FD19E]" />
-            <span>Farm Location & Dispatch</span>
-          </h2>
+          <div className="flex items-center justify-between border-b border-km-green-100 pb-3">
+            <h2 className="text-lg font-extrabold text-km-ink flex items-center gap-2">
+              <MapPin className="w-5 h-5 text-km-green-700" />
+              <span>{isUrdu ? '۳۔ فارم کا مقام' : '3. Farm Location'}</span>
+            </h2>
+            <button
+              type="button"
+              onClick={handleAutoLocation}
+              className="text-xs font-bold text-km-green-700 hover:underline inline-flex items-center gap-1"
+            >
+              <MapPin className="w-3.5 h-3.5" />
+              <span>{t('autoDetectLocation')}</span>
+            </button>
+          </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold text-[#2B2B2B] mb-1">
-                District <span className="text-red-500">*</span>
+              <label
+                htmlFor="post-district"
+                className="block text-sm font-bold text-km-ink mb-1.5"
+              >
+                {t('district')} *
               </label>
               <select
+                id="post-district"
                 value={district}
                 onChange={(e) => setDistrict(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-gray-300 text-sm font-semibold focus:outline-none focus:border-[#8FD19E] bg-white"
+                className="km-input py-3.5 text-base"
               >
                 {PAKISTAN_DISTRICTS.map((dist) => (
                   <option key={dist} value={dist}>
@@ -455,47 +547,55 @@ export default function AddProductPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#2B2B2B] mb-1">
-                Farm Address / Tehsil
+              <label
+                htmlFor="post-address"
+                className="block text-sm font-bold text-km-ink mb-1.5"
+              >
+                {isUrdu ? 'گاؤں / لوڈنگ پوائنٹ' : 'Village / Loading Point'}
               </label>
               <input
+                id="post-address"
                 type="text"
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
-                placeholder="Village, Tehsil or loading point"
-                className="w-full px-4 py-3 rounded-xl border border-gray-300 text-sm focus:outline-none focus:border-[#8FD19E]"
+                placeholder="Village, Tehsil or farm gate"
+                className="km-input py-3.5 text-base"
               />
             </div>
           </div>
         </div>
 
-        {/* Section 4: Product Photos */}
+        {/* Step 4: Photos (Large Clear Upload Area) */}
         <div className="space-y-4">
-          <div className="flex items-center justify-between border-b border-gray-100 pb-2">
-            <h2 className="text-base font-black text-[#2B2B2B] flex items-center gap-2">
-              <Upload className="w-4 h-4 text-[#8FD19E]" />
-              <span>Product Photos (Cloudinary Upload)</span>
+          <div className="flex items-center justify-between border-b border-km-green-100 pb-3">
+            <h2 className="text-lg font-extrabold text-km-ink flex items-center gap-2">
+              <Camera className="w-5 h-5 text-km-green-700" />
+              <span>
+                {isUrdu
+                  ? '۴۔ فصل کی تصاویر (کم از کم ۲ تجویز کردہ)'
+                  : '4. Produce Photos (2+ Recommended)'}
+              </span>
             </h2>
-            <span className="text-xs text-gray-500 font-bold">
-              {photos.length} / 5 Selected
-            </span>
+            <span className="km-badge">{photos.length} / 5</span>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
             {previews.map((url, index) => (
               <div
                 key={index}
-                className="relative h-28 rounded-2xl overflow-hidden border-2 border-[#8FD19E] group bg-gray-100"
+                className="relative aspect-[4/3] rounded-2xl overflow-hidden border-2 border-km-green-400 bg-km-cream-100"
               >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={url}
-                  alt={`Produce preview ${index + 1}`}
+                  alt={`Uploaded produce preview ${index + 1}`}
                   className="w-full h-full object-cover"
                 />
                 <button
                   type="button"
                   onClick={() => removePhoto(index)}
-                  className="absolute top-1.5 right-1.5 p-1 bg-black/70 hover:bg-black text-white rounded-full transition-colors"
+                  aria-label={`Remove photo ${index + 1}`}
+                  className="absolute top-2 end-2 p-1.5 bg-km-green-900/80 hover:bg-km-green-900 text-white rounded-full transition-colors"
                 >
                   <X className="w-3.5 h-3.5" />
                 </button>
@@ -506,10 +606,12 @@ export default function AddProductPage() {
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="h-28 rounded-2xl border-2 border-dashed border-gray-300 hover:border-[#8FD19E] hover:bg-[#FAF6EA] transition-all flex flex-col items-center justify-center p-2 text-center text-gray-600"
+                className="aspect-[4/3] rounded-2xl border-2 border-dashed border-km-green-400 bg-km-green-50/70 hover:bg-km-green-100 transition-all flex flex-col items-center justify-center p-4 text-center text-km-green-800 gap-2"
               >
-                <Upload className="w-6 h-6 text-gray-400 mb-1" />
-                <span className="text-xs font-bold">Add Photo</span>
+                <Upload className="w-7 h-7 text-km-green-700" />
+                <span className="text-sm font-extrabold">
+                  {t('uploadPhoto')}
+                </span>
               </button>
             )}
           </div>
@@ -522,33 +624,19 @@ export default function AddProductPage() {
             onChange={handlePhotoSelect}
             className="hidden"
           />
-          <p className="text-xs text-gray-500">
-            High quality photos of actual crops increase buyer trust and purchase inquiries.
-          </p>
         </div>
 
-        {/* Submit Button */}
-        <div className="pt-4 border-t border-gray-100 flex items-center justify-end gap-3">
-          <Link
-            href="/farmer"
-            className="px-5 py-3 rounded-xl text-sm font-bold text-gray-600 hover:text-black"
-          >
-            Cancel
+        {/* Large Submit CTA */}
+        <div className="pt-4 border-t border-km-green-100 flex flex-col-reverse sm:flex-row items-center justify-end gap-3">
+          <Link href="/farmer" className="w-full sm:w-auto km-btn-outline py-4 text-base">
+            {isUrdu ? 'واپس جائیں' : 'Cancel'}
           </Link>
-
           <button
             type="submit"
             disabled={submitting}
-            className="px-8 py-3.5 bg-[#8FD19E] hover:bg-[#6DBE82] text-[#2B2B2B] font-black text-base rounded-xl shadow-sm transition-all flex items-center gap-2 disabled:opacity-50"
+            className="w-full sm:w-auto km-btn-primary px-10 py-4 text-lg shadow-km-md"
           >
-            {submitting ? (
-              <>
-                <div className="w-4 h-4 border-2 border-[#2B2B2B] border-t-transparent rounded-full animate-spin"></div>
-                <span>Uploading & Publishing...</span>
-              </>
-            ) : (
-              <span>Publish Product</span>
-            )}
+            {submitting ? t('submitting') : t('postButton')}
           </button>
         </div>
       </form>

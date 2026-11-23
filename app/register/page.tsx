@@ -2,24 +2,55 @@
 
 import React, { useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
+import Image from 'next/image';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
-import Link from 'next/link';
-import { MapPin, Sprout, UserCheck, ShoppingCart, CheckCircle2, ShieldCheck } from 'lucide-react';
+import {
+  MapPin,
+  Sprout,
+  UserCheck,
+  ShoppingCart,
+  ShieldCheck,
+  AlertCircle,
+} from 'lucide-react';
 
-const PUNJAB_DISTRICTS = [
-  'Lahore', 'Faisalabad', 'Rawalpindi', 'Multan', 'Gujranwala', 
-  'Sargodha', 'Bahawalpur', 'Sahiwal', 'Sheikhupura', 'Jhang', 
-  'Rahim Yar Khan', 'Kasur', 'Okara', 'Pakpattan', 'Vehari', 
-  'Khanewal', 'Muzaffargarh', 'Dera Ghazi Khan', 'Bahawalnagar'
+const PAKISTAN_DISTRICTS = [
+  'Lahore',
+  'Mardan',
+  'Faisalabad',
+  'Rawalpindi',
+  'Multan',
+  'Gujranwala',
+  'Sargodha',
+  'Bahawalpur',
+  'Sahiwal',
+  'Sheikhupura',
+  'Jhang',
+  'Rahim Yar Khan',
+  'Kasur',
+  'Okara',
+  'Pakpattan',
+  'Vehari',
+  'Khanewal',
+  'Muzaffargarh',
+  'Dera Ghazi Khan',
+  'Bahawalnagar',
+  'Peshawar',
+  'Swat',
+  'Hyderabad',
+  'Sukkur',
+  'Quetta',
 ];
 
 function RegisterForm() {
   const searchParams = useSearchParams();
-  const initialRole = (searchParams.get('role') as 'farmer' | 'buyer') || 'farmer';
+  const initialRole =
+    (searchParams.get('role') as 'farmer' | 'buyer') || 'farmer';
 
   const { register, verifyOtp } = useAuth();
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
+  const isUrdu = locale === 'ur';
   const router = useRouter();
 
   const [step, setStep] = useState<'form' | 'verify'>('form');
@@ -29,14 +60,19 @@ function RegisterForm() {
   const [password, setPassword] = useState('');
   const [role, setRole] = useState<'farmer' | 'buyer'>(initialRole);
   const [district, setDistrict] = useState('Lahore');
-  const [coords, setCoords] = useState<{ lat: number; lng: number }>({ lat: 31.5204, lng: 74.3587 });
+  const [coords, setCoords] = useState<{ lat: number; lng: number }>({
+    lat: 31.5204,
+    lng: 74.3587,
+  });
   const [locating, setLocating] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   // OTP Verification state
   const [otpCode, setOtpCode] = useState('');
-  const [mockOtpDispatched, setMockOtpDispatched] = useState<string | null>(null);
+  const [mockOtpDispatched, setMockOtpDispatched] = useState<string | null>(
+    null
+  );
   const [verifying, setVerifying] = useState(false);
 
   const handleAutoLocation = () => {
@@ -87,7 +123,7 @@ function RegisterForm() {
 
     if (res.mockOtp) {
       setMockOtpDispatched(res.mockOtp);
-      setOtpCode(res.mockOtp); // Pre-fill for user convenience in testing
+      setOtpCode(res.mockOtp);
       setStep('verify');
     } else {
       router.push(role === 'farmer' ? '/farmer' : '/buyer');
@@ -117,60 +153,72 @@ function RegisterForm() {
 
   if (step === 'verify') {
     return (
-      <div className="w-full max-w-md bg-white p-8 rounded-3xl shadow-sm border border-[#8FD19E] space-y-6 text-center">
-        <div className="w-14 h-14 rounded-2xl bg-[#8FD19E]/20 flex items-center justify-center mx-auto text-[#2B2B2B]">
+      <div className="max-w-md mx-auto km-card p-8 space-y-6 text-center">
+        <div className="w-14 h-14 rounded-2xl bg-km-green-100 flex items-center justify-center mx-auto text-km-green-800">
           <ShieldCheck className="w-7 h-7" />
         </div>
 
         <div>
-          <h2 className="text-2xl font-black text-[#2B2B2B]">
+          <h1 className="text-2xl font-extrabold text-km-ink">
             Verify Phone Number
-          </h2>
-          <p className="text-sm text-gray-600 mt-1">
-            A 6-digit verification code has been dispatched for <span className="font-bold text-[#2B2B2B]">{phone}</span>.
+          </h1>
+          <p className="text-sm text-km-ink-muted mt-1">
+            A 6-digit verification code has been dispatched for{' '}
+            <span className="font-bold text-km-ink">{phone}</span>.
           </p>
         </div>
 
         {mockOtpDispatched && (
-          <div className="p-3 bg-[#FAF6EA] border border-[#8FD19E] rounded-xl text-xs text-gray-700">
-            <span className="font-bold">Test OTP Code:</span> <span className="font-mono font-bold text-base text-[#2B2B2B]">{mockOtpDispatched}</span>
+          <div className="p-3.5 bg-km-cream-100 border border-km-green-300 rounded-xl text-xs text-km-ink-muted">
+            <span className="font-bold">Verification Code:</span>{' '}
+            <span className="font-mono font-extrabold text-base text-km-green-800">
+              {mockOtpDispatched}
+            </span>
           </div>
         )}
 
         {error && (
-          <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm font-semibold">
+          <div
+            role="alert"
+            className="p-3.5 bg-km-cream-200 border border-km-ink/30 text-km-ink rounded-xl text-sm font-semibold"
+          >
             {error}
           </div>
         )}
 
         <form onSubmit={handleVerifyOtp} className="space-y-4">
           <div>
-            <label className="block text-xs font-bold text-[#2B2B2B] uppercase mb-1.5">
+            <label
+              htmlFor="otp-code"
+              className="block text-xs font-bold text-km-ink uppercase mb-1.5"
+            >
               Enter 6-Digit Code
             </label>
             <input
+              id="otp-code"
               type="text"
               maxLength={6}
               value={otpCode}
               onChange={(e) => setOtpCode(e.target.value)}
               required
               placeholder="123456"
-              className="w-full text-center tracking-widest text-2xl font-mono py-3 border-2 border-gray-200 rounded-xl focus:border-[#8FD19E] focus:outline-none"
+              className="km-input text-center tracking-widest text-2xl font-mono py-3.5"
             />
           </div>
 
           <button
             type="submit"
             disabled={verifying}
-            className="w-full py-4 bg-[#8FD19E] hover:bg-[#6DBE82] text-[#2B2B2B] font-black text-lg rounded-xl shadow-sm transition-all"
+            className="w-full km-btn-primary py-4 text-base"
           >
             {verifying ? 'Verifying...' : 'Confirm Verification & Continue'}
           </button>
         </form>
 
         <button
+          type="button"
           onClick={() => router.push(role === 'farmer' ? '/farmer' : '/buyer')}
-          className="text-xs text-gray-500 underline hover:text-[#2B2B2B]"
+          className="text-xs text-km-green-800 underline font-semibold"
         >
           Skip verification for now and proceed to portal
         </button>
@@ -179,155 +227,249 @@ function RegisterForm() {
   }
 
   return (
-    <div className="w-full max-w-md bg-white p-8 rounded-3xl shadow-sm border border-[#8FD19E]">
-      <div className="text-center mb-6">
-        <div className="w-12 h-12 bg-[#8FD19E] rounded-xl flex items-center justify-center mx-auto mb-3 shadow-sm">
-          <Sprout className="w-6 h-6 text-[#2B2B2B]" />
+    <div className="max-w-5xl mx-auto bg-white rounded-3xl border border-km-green-200/80 shadow-km-lg overflow-hidden grid grid-cols-1 lg:grid-cols-12">
+      {/* Form Column */}
+      <div className="lg:col-span-7 p-7 sm:p-10">
+        <div className="space-y-1.5 mb-6">
+          <div className="w-11 h-11 rounded-xl bg-km-green-700 flex items-center justify-center shadow-km-sm mb-3">
+            <Sprout className="w-5 h-5 text-km-green-200" />
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-km-ink">
+            {t('signup')}
+          </h1>
+          <p className="text-sm text-km-ink-muted">
+            {isUrdu
+              ? 'کسان یا خریدار کے طور پر اپنا مفت اکاؤنٹ بنائیں'
+              : 'Create your free Farmer or Buyer account in under a minute.'}
+          </p>
         </div>
-        <h1 className="text-2xl font-black text-[#2B2B2B]">
-          {t('signup')}
-        </h1>
-        <p className="text-sm text-gray-600 mt-1">
-          {t('tagline')}
-        </p>
-      </div>
 
-      {error && (
-        <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm font-semibold">
-          {error}
-        </div>
-      )}
-
-      {/* Role Picker Buttons */}
-      <div className="mb-5">
-        <label className="block text-base font-bold text-[#2B2B2B] mb-2">
-          {t('chooseRole')}
-        </label>
-        <div className="grid grid-cols-2 gap-3">
-          <button
-            type="button"
-            onClick={() => setRole('farmer')}
-            className={`py-3 px-3 rounded-xl border-2 font-black text-base flex items-center justify-center gap-2 transition-all cursor-pointer ${
-              role === 'farmer'
-                ? 'border-[#8FD19E] bg-[#8FD19E] text-[#2B2B2B]'
-                : 'border-gray-200 bg-white text-gray-600'
-            }`}
+        {error && (
+          <div
+            role="alert"
+            className="mb-5 p-3.5 bg-km-cream-200 border border-km-ink/30 text-km-ink rounded-xl text-sm font-semibold flex items-center gap-2"
           >
-            <UserCheck className="w-5 h-5" />
-            <span>{t('farmer')}</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setRole('buyer')}
-            className={`py-3 px-3 rounded-xl border-2 font-black text-base flex items-center justify-center gap-2 transition-all cursor-pointer ${
-              role === 'buyer'
-                ? 'border-[#8FD19E] bg-[#8FD19E] text-[#2B2B2B]'
-                : 'border-gray-200 bg-white text-gray-600'
-            }`}
-          >
-            <ShoppingCart className="w-5 h-5" />
-            <span>{t('buyer')}</span>
-          </button>
-        </div>
-      </div>
+            <AlertCircle className="w-4 h-4 text-km-ink flex-shrink-0" />
+            <span>{error}</span>
+          </div>
+        )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-base font-bold text-[#2B2B2B] mb-1">
-            {t('fullName')} *
-          </label>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Muhammad Akram"
-            required
-            className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#8FD19E] focus:outline-none text-base text-[#2B2B2B]"
-          />
-        </div>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Role Selection */}
+          <div>
+            <span className="block text-xs font-bold text-km-ink uppercase tracking-wider mb-2">
+              {t('chooseRole')}
+            </span>
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => setRole('farmer')}
+                className={`p-4 rounded-2xl border-2 text-start transition-all flex items-center gap-3 ${
+                  role === 'farmer'
+                    ? 'border-km-green-700 bg-km-green-50 text-km-ink shadow-km-sm'
+                    : 'border-km-green-200/80 bg-white text-km-ink-muted hover:border-km-green-400'
+                }`}
+              >
+                <div
+                  className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
+                    role === 'farmer'
+                      ? 'bg-km-green-700 text-white'
+                      : 'bg-km-cream-100 text-km-green-800'
+                  }`}
+                >
+                  <UserCheck className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="text-sm font-extrabold">{t('farmer')}</div>
+                  <div className="text-[11px] text-km-ink-muted">
+                    {isUrdu ? 'فصل فروخت کریں' : 'Sell produce'}
+                  </div>
+                </div>
+              </button>
 
-        <div>
-          <label className="block text-base font-bold text-[#2B2B2B] mb-1">
-            {t('phone')} *
-          </label>
-          <input
-            type="tel"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            placeholder={t('phonePlaceholder')}
-            required
-            className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#8FD19E] focus:outline-none text-base text-[#2B2B2B]"
-          />
-        </div>
+              <button
+                type="button"
+                onClick={() => setRole('buyer')}
+                className={`p-4 rounded-2xl border-2 text-start transition-all flex items-center gap-3 ${
+                  role === 'buyer'
+                    ? 'border-km-green-700 bg-km-green-50 text-km-ink shadow-km-sm'
+                    : 'border-km-green-200/80 bg-white text-km-ink-muted hover:border-km-green-400'
+                }`}
+              >
+                <div
+                  className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
+                    role === 'buyer'
+                      ? 'bg-km-green-700 text-white'
+                      : 'bg-km-cream-100 text-km-green-800'
+                  }`}
+                >
+                  <ShoppingCart className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="text-sm font-extrabold">{t('buyer')}</div>
+                  <div className="text-[11px] text-km-ink-muted">
+                    {isUrdu ? 'بولی لگائیں' : 'Browse & bid'}
+                  </div>
+                </div>
+              </button>
+            </div>
+          </div>
 
-        <div>
-          <label className="block text-base font-bold text-[#2B2B2B] mb-1">
-            Email Address (Optional)
-          </label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="name@domain.com"
-            className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#8FD19E] focus:outline-none text-base text-[#2B2B2B]"
-          />
-        </div>
+          {/* Name & Phone */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label
+                htmlFor="reg-name"
+                className="block text-xs font-bold text-km-ink mb-1.5"
+              >
+                {t('fullName')} *
+              </label>
+              <input
+                id="reg-name"
+                type="text"
+                required
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="e.g. Muhammad Ali"
+                className="km-input"
+              />
+            </div>
 
-        <div>
-          <label className="block text-base font-bold text-[#2B2B2B] mb-1">
-            {t('password')} *
-          </label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="••••••••"
-            required
-            className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#8FD19E] focus:outline-none text-base text-[#2B2B2B]"
-          />
-        </div>
+            <div>
+              <label
+                htmlFor="reg-phone"
+                className="block text-xs font-bold text-km-ink mb-1.5"
+              >
+                {t('phone')} *
+              </label>
+              <input
+                id="reg-phone"
+                type="tel"
+                required
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder={t('phonePlaceholder')}
+                className="km-input"
+              />
+            </div>
+          </div>
 
-        <div>
-          <label className="block text-base font-bold text-[#2B2B2B] mb-1">
-            {t('district')} *
-          </label>
-          <div className="flex gap-2">
-            <select
-              value={district}
-              onChange={(e) => setDistrict(e.target.value)}
-              className="flex-1 px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#8FD19E] focus:outline-none text-base text-[#2B2B2B] bg-white"
-            >
-              {PUNJAB_DISTRICTS.map((d) => (
-                <option key={d} value={d}>
-                  {d}
-                </option>
-              ))}
-            </select>
+          {/* Email & Password */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label
+                htmlFor="reg-email"
+                className="block text-xs font-bold text-km-ink mb-1.5"
+              >
+                Email (Optional)
+              </label>
+              <input
+                id="reg-email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="name@example.com"
+                className="km-input"
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="reg-password"
+                className="block text-xs font-bold text-km-ink mb-1.5"
+              >
+                {t('password')} *
+              </label>
+              <input
+                id="reg-password"
+                type="password"
+                required
+                minLength={6}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                className="km-input"
+              />
+            </div>
+          </div>
+
+          {/* District & Auto Location */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-end">
+            <div>
+              <label
+                htmlFor="reg-district"
+                className="block text-xs font-bold text-km-ink mb-1.5"
+              >
+                {t('district')} *
+              </label>
+              <select
+                id="reg-district"
+                value={district}
+                onChange={(e) => setDistrict(e.target.value)}
+                className="km-input"
+              >
+                {PAKISTAN_DISTRICTS.map((dist) => (
+                  <option key={dist} value={dist}>
+                    {dist}
+                  </option>
+                ))}
+              </select>
+            </div>
+
             <button
               type="button"
               onClick={handleAutoLocation}
               disabled={locating}
-              title={t('autoDetectLocation')}
-              className="px-3 bg-[#FAF6EA] border-2 border-[#8FD19E] rounded-xl flex items-center justify-center hover:bg-[#8FD19E] transition-colors"
+              className="km-btn-outline py-3 text-xs"
             >
-              <MapPin className="w-5 h-5 text-[#2B2B2B]" />
+              <MapPin className="w-4 h-4 text-km-green-700" />
+              <span>
+                {locating ? 'Detecting GPS...' : t('autoDetectLocation')}
+              </span>
             </button>
           </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full km-btn-primary py-4 text-base mt-2"
+          >
+            {loading ? 'Creating Account...' : t('register')}
+          </button>
+        </form>
+
+        <div className="mt-6 pt-5 border-t border-km-green-100 text-center text-sm font-medium text-km-ink-muted">
+          <Link
+            href="/login"
+            className="text-km-green-800 font-bold hover:underline"
+          >
+            {t('alreadyHaveAccount')}
+          </Link>
         </div>
+      </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full py-4 mt-2 bg-[#8FD19E] hover:bg-[#6DBE82] text-[#2B2B2B] font-black text-xl rounded-xl shadow-sm transition-all min-h-[52px] flex items-center justify-center cursor-pointer"
-        >
-          {loading ? '...' : t('signup')}
-        </button>
-      </form>
-
-      <div className="mt-5 text-center text-sm font-semibold">
-        <Link href="/login" className="text-[#2B2B2B] underline hover:text-[#6DBE82]">
-          {t('alreadyHaveAccount')}
-        </Link>
+      {/* Visual Side Panel */}
+      <div className="hidden lg:block lg:col-span-5 relative min-h-[560px] bg-km-green-900">
+        <Image
+          src="/images/mandi-direct.jpg"
+          alt="Direct agricultural trade between Pakistani farmer and buyer"
+          fill
+          sizes="42vw"
+          className="object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-km-green-900/90 via-km-green-900/35 to-transparent" />
+        <div className="absolute bottom-8 inset-x-8 text-white space-y-3">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-km-green-700/90 text-km-green-100 text-xs font-bold">
+            <ShieldCheck className="w-3.5 h-3.5" />
+            <span>Free Registration</span>
+          </span>
+          <h2 className="text-2xl font-extrabold text-white">
+            Join 2,400+ Farmers & Buyers Across Pakistan
+          </h2>
+          <p className="text-sm text-km-green-100 leading-relaxed">
+            Zero commission fees, verified farm photos, and transparent competitive pricing on every harvest.
+          </p>
+        </div>
       </div>
     </div>
   );
@@ -335,8 +477,14 @@ function RegisterForm() {
 
 export default function RegisterPage() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-[70vh] px-4 py-8">
-      <Suspense fallback={<div className="text-sm font-bold text-gray-500">Loading registration...</div>}>
+    <div className="km-container py-10 sm:py-16">
+      <Suspense
+        fallback={
+          <div className="min-h-[50vh] flex items-center justify-center">
+            <div className="w-8 h-8 border-4 border-km-green-700 border-t-transparent rounded-full animate-spin" />
+          </div>
+        }
+      >
         <RegisterForm />
       </Suspense>
     </div>

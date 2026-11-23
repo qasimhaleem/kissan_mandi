@@ -1,15 +1,17 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
-import Link from 'next/link';
-import { Sprout, KeyRound, CheckCircle2 } from 'lucide-react';
+import { Sprout, CheckCircle2, AlertCircle, ShieldCheck } from 'lucide-react';
 import { API_BASE } from '@/lib/api';
 
 export default function LoginPage() {
   const { login } = useAuth();
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
+  const isUrdu = locale === 'ur';
 
   const [phoneOrEmail, setPhoneOrEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -60,13 +62,17 @@ export default function LoginPage() {
       });
       const data = await res.json();
       if (!res.ok || !data.success) {
-        throw new Error(data.error?.message || data.message || 'Failed to request password reset.');
+        throw new Error(
+          data.error?.message || data.message || 'Failed to request password reset.'
+        );
       }
 
       setResetToken(data.mockResetToken || '');
       setResetStep('submit');
-    } catch (err: any) {
-      setError(err.message || 'Failed to request reset.');
+    } catch (err: unknown) {
+      setError(
+        err instanceof Error ? err.message : 'Failed to request reset.'
+      );
     } finally {
       setResetLoading(false);
     }
@@ -89,180 +95,246 @@ export default function LoginPage() {
       });
       const data = await res.json();
       if (!res.ok || !data.success) {
-        throw new Error(data.error?.message || data.message || 'Password reset failed.');
+        throw new Error(
+          data.error?.message || data.message || 'Password reset failed.'
+        );
       }
 
-      setResetSuccess('Password has been successfully updated. You may now log in.');
+      setResetSuccess(
+        'Password has been successfully updated. You may now log in.'
+      );
       setShowForgot(false);
       setPassword('');
-    } catch (err: any) {
-      setError(err.message || 'Failed to update password.');
+    } catch (err: unknown) {
+      setError(
+        err instanceof Error ? err.message : 'Failed to update password.'
+      );
     } finally {
       setResetLoading(false);
     }
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[70vh] px-4 py-8">
-      <div className="w-full max-w-md bg-white p-8 rounded-3xl shadow-sm border border-[#8FD19E]">
-        <div className="text-center mb-6">
-          <div className="w-12 h-12 bg-[#8FD19E] rounded-xl flex items-center justify-center mx-auto mb-3 shadow-sm">
-            <Sprout className="w-6 h-6 text-[#2B2B2B]" />
+    <div className="km-container py-10 sm:py-16">
+      <div className="max-w-5xl mx-auto bg-white rounded-3xl border border-km-green-200/80 shadow-km-lg overflow-hidden grid grid-cols-1 lg:grid-cols-12">
+        {/* Form Column */}
+        <div className="lg:col-span-6 p-7 sm:p-10 lg:p-12 flex flex-col justify-center">
+          <div className="space-y-2 mb-7">
+            <div className="w-11 h-11 rounded-xl bg-km-green-700 flex items-center justify-center shadow-km-sm mb-3">
+              <Sprout className="w-5 h-5 text-km-green-200" />
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-km-ink">
+              {t('login')}
+            </h1>
+            <p className="text-sm text-km-ink-muted">
+              {isUrdu
+                ? 'اپنے کسان منڈی پورٹل میں داخل ہوں'
+                : 'Sign in to access your KissanMandi Farmer or Buyer portal.'}
+            </p>
           </div>
-          <h1 className="text-2xl font-black text-[#2B2B2B]">
-            {t('login')}
-          </h1>
-          <p className="text-sm text-gray-600 mt-1">
-            Access your KissanMandi Portal
-          </p>
+
+          {resetSuccess && (
+            <div className="mb-5 p-3.5 bg-km-green-50 border border-km-green-300 text-km-green-800 rounded-xl text-sm font-semibold flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-km-green-700 flex-shrink-0" />
+              <span>{resetSuccess}</span>
+            </div>
+          )}
+
+          {error && (
+            <div
+              role="alert"
+              className="mb-5 p-3.5 bg-km-cream-200 border border-km-ink/30 text-km-ink rounded-xl text-sm font-semibold flex items-center gap-2"
+            >
+              <AlertCircle className="w-4 h-4 text-km-ink flex-shrink-0" />
+              <span>{error}</span>
+            </div>
+          )}
+
+          {!showForgot ? (
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label
+                  htmlFor="login-identifier"
+                  className="block text-sm font-bold text-km-ink mb-1.5"
+                >
+                  {isUrdu ? 'فون نمبر یا ای میل' : 'Phone Number or Email'}
+                </label>
+                <input
+                  id="login-identifier"
+                  type="text"
+                  value={phoneOrEmail}
+                  onChange={(e) => setPhoneOrEmail(e.target.value)}
+                  placeholder="03001234567 or user@domain.com"
+                  required
+                  className="km-input py-3.5 text-base"
+                />
+              </div>
+
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label
+                    htmlFor="login-password"
+                    className="text-sm font-bold text-km-ink"
+                  >
+                    {t('password')}
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowForgot(true);
+                      setError('');
+                    }}
+                    className="text-xs font-bold text-km-green-700 hover:text-km-green-900 underline"
+                  >
+                    {isUrdu ? 'پاس ورڈ بھول گئے؟' : 'Forgot Password?'}
+                  </button>
+                </div>
+                <input
+                  id="login-password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  required
+                  className="km-input py-3.5 text-base"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full km-btn-primary py-4 text-base mt-2"
+              >
+                {loading
+                  ? isUrdu
+                    ? 'تصدیق ہو رہی ہے...'
+                    : 'Authenticating...'
+                  : t('login')}
+              </button>
+            </form>
+          ) : (
+            <div className="space-y-4">
+              <div className="p-3.5 bg-km-cream-100 rounded-xl border border-km-cream-300 text-xs text-km-ink-muted font-medium">
+                Reset your password using your registered phone number.
+              </div>
+
+              {resetStep === 'request' ? (
+                <form onSubmit={handleRequestReset} className="space-y-3.5">
+                  <div>
+                    <label
+                      htmlFor="reset-phone"
+                      className="block text-xs font-bold text-km-ink mb-1.5"
+                    >
+                      Registered Phone Number
+                    </label>
+                    <input
+                      id="reset-phone"
+                      type="tel"
+                      value={resetPhone}
+                      onChange={(e) => setResetPhone(e.target.value)}
+                      required
+                      placeholder="03001234567"
+                      className="km-input"
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    disabled={resetLoading}
+                    className="w-full km-btn-primary py-3"
+                  >
+                    {resetLoading ? 'Requesting...' : 'Send Reset Code'}
+                  </button>
+                </form>
+              ) : (
+                <form onSubmit={handleExecuteReset} className="space-y-3.5">
+                  <div>
+                    <label
+                      htmlFor="reset-token"
+                      className="block text-xs font-bold text-km-ink mb-1.5"
+                    >
+                      Reset Token / Code
+                    </label>
+                    <input
+                      id="reset-token"
+                      type="text"
+                      value={resetToken}
+                      onChange={(e) => setResetToken(e.target.value)}
+                      required
+                      className="km-input font-mono"
+                    />
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="reset-new-password"
+                      className="block text-xs font-bold text-km-ink mb-1.5"
+                    >
+                      New Password
+                    </label>
+                    <input
+                      id="reset-new-password"
+                      type="password"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      required
+                      placeholder="••••••••"
+                      className="km-input"
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    disabled={resetLoading}
+                    className="w-full km-btn-primary py-3"
+                  >
+                    {resetLoading ? 'Updating...' : 'Set New Password'}
+                  </button>
+                </form>
+              )}
+
+              <button
+                type="button"
+                onClick={() => {
+                  setShowForgot(false);
+                  setError('');
+                }}
+                className="w-full text-center text-xs text-km-green-800 underline font-bold pt-1"
+              >
+                Back to Login
+              </button>
+            </div>
+          )}
+
+          <div className="mt-7 pt-5 border-t border-km-green-100 text-center text-sm font-medium text-km-ink-muted">
+            <Link
+              href="/register"
+              className="text-km-green-800 font-bold hover:underline"
+            >
+              {t('dontHaveAccount')}
+            </Link>
+          </div>
         </div>
 
-        {resetSuccess && (
-          <div className="mb-4 p-3 bg-green-50 border border-green-200 text-green-800 rounded-xl text-sm font-semibold flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-green-600 flex-shrink-0" />
-            <span>{resetSuccess}</span>
+        {/* Visual Editorial Side Column */}
+        <div className="hidden lg:block lg:col-span-6 relative min-h-[520px] bg-km-green-900">
+          <Image
+            src="/images/hero-farm.jpg"
+            alt="Pakistani farmer in green wheat field"
+            fill
+            sizes="50vw"
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-km-green-900/90 via-km-green-900/30 to-transparent" />
+          <div className="absolute bottom-8 inset-x-8 text-white space-y-3">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-km-green-700/90 text-km-green-100 text-xs font-bold">
+              <ShieldCheck className="w-3.5 h-3.5" />
+              <span>Zero Commission Marketplace</span>
+            </span>
+            <h2 className="text-2xl font-extrabold text-white">
+              Direct Access to Verified Farmers & Commercial Buyers
+            </h2>
+            <p className="text-sm text-km-green-100 leading-relaxed">
+              Manage your harvest listings, track incoming bids, and settle deals directly with Cash on Delivery.
+            </p>
           </div>
-        )}
-
-        {error && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm font-semibold">
-            {error}
-          </div>
-        )}
-
-        {!showForgot ? (
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-base font-bold text-[#2B2B2B] mb-1.5">
-                Phone Number or Email
-              </label>
-              <input
-                type="text"
-                value={phoneOrEmail}
-                onChange={(e) => setPhoneOrEmail(e.target.value)}
-                placeholder="03001234567 or user@domain.com"
-                required
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#8FD19E] focus:outline-none text-base text-[#2B2B2B]"
-              />
-            </div>
-
-            <div>
-              <div className="flex items-center justify-between mb-1.5">
-                <label className="text-base font-bold text-[#2B2B2B]">
-                  {t('password')}
-                </label>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowForgot(true);
-                    setError('');
-                  }}
-                  className="text-xs font-bold text-gray-500 hover:text-[#2B2B2B] underline"
-                >
-                  Forgot Password?
-                </button>
-              </div>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                required
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#8FD19E] focus:outline-none text-base text-[#2B2B2B]"
-              />
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-4 mt-2 bg-[#8FD19E] hover:bg-[#6DBE82] text-[#2B2B2B] font-black text-xl rounded-xl shadow-sm transition-all min-h-[52px] flex items-center justify-center cursor-pointer"
-            >
-              {loading ? 'Authenticating...' : t('login')}
-            </button>
-          </form>
-        ) : (
-          <div className="space-y-4">
-            <div className="p-3 bg-[#FAF6EA] rounded-xl border border-gray-200 text-xs text-gray-700 font-medium">
-              Reset your password using your registered phone number.
-            </div>
-
-            {resetStep === 'request' ? (
-              <form onSubmit={handleRequestReset} className="space-y-3">
-                <div>
-                  <label className="block text-xs font-bold uppercase text-[#2B2B2B] mb-1">
-                    Registered Phone Number
-                  </label>
-                  <input
-                    type="tel"
-                    value={resetPhone}
-                    onChange={(e) => setResetPhone(e.target.value)}
-                    required
-                    placeholder="03001234567"
-                    className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm"
-                  />
-                </div>
-                <button
-                  type="submit"
-                  disabled={resetLoading}
-                  className="w-full py-3 bg-[#8FD19E] hover:bg-[#6DBE82] text-[#2B2B2B] font-bold text-sm rounded-xl"
-                >
-                  {resetLoading ? 'Requesting...' : 'Send Reset Code'}
-                </button>
-              </form>
-            ) : (
-              <form onSubmit={handleExecuteReset} className="space-y-3">
-                <div>
-                  <label className="block text-xs font-bold uppercase text-[#2B2B2B] mb-1">
-                    Reset Token / Code
-                  </label>
-                  <input
-                    type="text"
-                    value={resetToken}
-                    onChange={(e) => setResetToken(e.target.value)}
-                    required
-                    className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm font-mono"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold uppercase text-[#2B2B2B] mb-1">
-                    New Password
-                  </label>
-                  <input
-                    type="password"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    required
-                    placeholder="••••••••"
-                    className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm"
-                  />
-                </div>
-                <button
-                  type="submit"
-                  disabled={resetLoading}
-                  className="w-full py-3 bg-[#8FD19E] hover:bg-[#6DBE82] text-[#2B2B2B] font-bold text-sm rounded-xl"
-                >
-                  {resetLoading ? 'Updating...' : 'Set New Password'}
-                </button>
-              </form>
-            )}
-
-            <button
-              type="button"
-              onClick={() => {
-                setShowForgot(false);
-                setError('');
-              }}
-              className="w-full text-center text-xs text-gray-500 underline font-bold mt-2"
-            >
-              Back to Login
-            </button>
-          </div>
-        )}
-
-        <div className="mt-6 text-center text-sm font-semibold">
-          <Link href="/register" className="text-[#2B2B2B] underline hover:text-[#6DBE82]">
-            {t('dontHaveAccount')}
-          </Link>
         </div>
       </div>
     </div>
