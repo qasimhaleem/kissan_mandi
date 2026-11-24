@@ -39,11 +39,10 @@ module.exports = {
         dark: '#1D2B22',
       },
       fontFamily: {
-        heading: ['var(--font-heading)', 'var(--font-body)', 'sans-serif'],
-        sans: ['var(--font-body)', 'sans-serif'],
-        accent: ['var(--font-accent)', 'Georgia', 'serif'],
-        urdu: ['var(--font-urdu-body)', 'var(--font-urdu-heading)', 'sans-serif'],
-        urduHeading: ['var(--font-urdu-heading)', 'var(--font-urdu-body)', 'sans-serif'],
+        heading: ['var(--font-gt-america)', 'var(--font-heading)', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        sans: ['var(--font-gt-america)', 'var(--font-body)', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        mono: ['var(--font-mono)', 'SFMono-Regular', 'Menlo', 'monospace'],
+        accent: ['Georgia', 'serif'],
       },
       fontSize: {
         'hero': [
@@ -83,6 +82,10 @@ module.exports = {
         'km-card': '0 2px 10px -2px rgba(35, 98, 56, 0.06), 0 0 0 1px rgba(35, 98, 56, 0.07)',
       },
       keyframes: {
+        pageEnter: {
+          '0%': { opacity: '0', transform: 'translateY(6px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
         fadeUp: {
           '0%': { opacity: '0', transform: 'translateY(14px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
@@ -92,6 +95,7 @@ module.exports = {
         },
       },
       animation: {
+        'page-enter': 'pageEnter 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards',
         'fade-up': 'fadeUp 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards',
         shimmer: 'shimmer 1.5s infinite',
       },

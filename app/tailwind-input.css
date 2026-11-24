@@ -49,10 +49,15 @@
     text-rendering: optimizeLegibility;
   }
 
+  ::selection {
+    background-color: #C5E8CE;
+    color: #1D2B22;
+  }
+
   body {
     background-color: var(--km-cream);
     color: var(--km-ink);
-    font-family: var(--font-body), sans-serif;
+    font-family: var(--font-gt-america), var(--font-body), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     font-size: var(--km-text-body);
     line-height: 1.65;
     margin: 0;
@@ -60,10 +65,13 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  h1, h2, h3, h4 {
-    font-family: var(--font-heading), var(--font-body), sans-serif;
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-gt-america), var(--font-heading), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     color: var(--km-ink);
-    letter-spacing: -0.02em;
+    letter-spacing: -0.025em;
   }
 
   h1 {
@@ -91,31 +99,53 @@
   }
 }
 
-/* Native Urdu RTL Typography — Automatic Switch with Generous Nastaliq Line-Height */
-[dir="rtl"] {
-  font-family: var(--font-urdu-body), var(--font-urdu-heading), sans-serif;
-  line-height: 1.85;
+/* Google Translate Clean Integration */
+.goog-te-banner-frame {
+  display: none !important;
 }
 
-[dir="rtl"] h1,
-[dir="rtl"] h2,
-[dir="rtl"] h3,
-[dir="rtl"] .font-heading {
-  font-family: var(--font-urdu-heading), var(--font-urdu-body), sans-serif;
-  letter-spacing: 0 !important;
-  line-height: 1.95 !important;
-  padding-top: 0.12em;
-  padding-bottom: 0.18em;
+body {
+  top: 0px !important;
+  position: static !important;
 }
 
-[dir="rtl"] .km-eyebrow {
-  letter-spacing: 0;
-  text-transform: none;
+.skiptranslate:not(.google-translate-container) {
+  display: none !important;
+}
+
+#goog-gt-tt,
+.goog-te-balloon-frame {
+  display: none !important;
+}
+
+.goog-text-highlight {
+  background: none !important;
+  box-shadow: none !important;
+}
+
+/* Smart Page Navigation Animation */
+@keyframes pageEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-page-enter {
+  animation: pageEnter 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
 }
 
 /* Respect User Motion Preferences */
 @media (prefers-reduced-motion: reduce) {
-  .animate-fade-up {
+
+  .animate-fade-up,
+  .animate-page-enter {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;
@@ -185,6 +215,7 @@
 .scrollbar-none::-webkit-scrollbar {
   display: none;
 }
+
 .scrollbar-none {
   -ms-overflow-style: none;
   scrollbar-width: none;

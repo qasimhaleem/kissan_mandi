@@ -10,14 +10,13 @@ import {
   List,
   ArrowDownToLine,
   ShoppingCart,
-  Store,
+  LayoutDashboard,
 } from 'lucide-react';
 
 export default function MobileNav() {
   const pathname = usePathname();
-  const { locale, t } = useLanguage();
+  const { t } = useLanguage();
   const { user } = useAuth();
-  const isUrdu = locale === 'ur';
 
   if (!user) return null;
 
@@ -62,19 +61,20 @@ export default function MobileNav() {
             <span className="text-[11px]">{t('bidsReceived')}</span>
           </Link>
         </>
+      ) : user.role === 'admin' ? (
+        <Link
+          href="/admin"
+          className={`flex flex-col items-center justify-center w-full py-1.5 rounded-xl transition-colors ${
+            pathname === '/admin'
+              ? 'text-km-green-800 font-extrabold bg-km-green-50'
+              : 'text-km-ink-muted'
+          }`}
+        >
+          <LayoutDashboard className="w-5 h-5 mb-0.5" />
+          <span className="text-[11px]">Admin</span>
+        </Link>
       ) : (
         <>
-          <Link
-            href="/marketplace"
-            className={`flex flex-col items-center justify-center w-full py-1.5 rounded-xl transition-colors ${
-              pathname?.startsWith('/marketplace')
-                ? 'text-km-green-800 font-extrabold bg-km-green-50'
-                : 'text-km-ink-muted'
-            }`}
-          >
-            <Store className="w-5 h-5 mb-0.5" />
-            <span className="text-[11px]">{isUrdu ? 'مارکیٹ' : 'Marketplace'}</span>
-          </Link>
           <Link
             href="/buyer"
             className={`flex flex-col items-center justify-center w-full py-1.5 rounded-xl transition-colors ${

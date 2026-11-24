@@ -17,7 +17,6 @@ import {
   PlayCircle,
   Trash2,
   Edit,
-  ExternalLink,
   Building,
   Save,
   CheckCircle2,
@@ -112,7 +111,6 @@ export default function FarmerDashboard() {
 
   useEffect(() => {
     if (user?.farmerProfile) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setFarmData({
         farmSizeAcres: user.farmerProfile.farmSizeAcres || 0,
         primaryCrops: user.farmerProfile.primaryCrops || [],
@@ -559,14 +557,6 @@ export default function FarmerDashboard() {
                         className="p-2.5 rounded-xl border border-km-green-200 bg-white hover:bg-km-green-50 text-km-green-800 transition-colors"
                       >
                         <Edit className="w-4 h-4" />
-                      </Link>
-                      <Link
-                        href={`/marketplace/products/${product.slug || product._id}`}
-                        aria-label="View in marketplace"
-                        title="View in Marketplace"
-                        className="p-2.5 rounded-xl border border-km-green-200 bg-white hover:bg-km-green-50 text-km-green-800 transition-colors"
-                      >
-                        <ExternalLink className="w-4 h-4" />
                       </Link>
                       <button
                         type="button"

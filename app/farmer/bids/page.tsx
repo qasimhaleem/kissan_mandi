@@ -84,7 +84,6 @@ function FarmerBidsContent() {
 
   useEffect(() => {
     if (listingId) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSelectedListingId(listingId);
     }
   }, [listingId]);

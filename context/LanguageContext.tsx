@@ -18,8 +18,7 @@ const translations: Record<Locale, any> = { en, ur };
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  // Default to Urdu for farmers as per requirements
-  const [locale, setLocaleState] = useState<Locale>('ur');
+  const [locale, setLocaleState] = useState<Locale>('en');
 
   useEffect(() => {
     const saved = localStorage.getItem('km_locale') as Locale;
@@ -64,7 +63,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <LanguageContext.Provider value={{ locale, setLocale, t, dir }}>
-      <div dir={dir} className={locale === 'ur' ? 'font-urdu' : ''}>
+      <div dir={dir}>
         {children}
       </div>
     </LanguageContext.Provider>

@@ -280,15 +280,24 @@ export default function AddProductPage() {
           </div>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
-            <Link href="/farmer" className="w-full sm:w-auto km-btn-outline py-3.5 text-base">
+            <Link href="/farmer" className="w-full sm:w-auto km-btn-primary py-3.5 text-base">
               {t('viewListings')}
             </Link>
-            <Link
-              href={`/marketplace/products/${createdProduct.slug || createdProduct._id}`}
-              className="w-full sm:w-auto km-btn-primary py-3.5 text-base"
+            <button
+              type="button"
+              onClick={() => {
+                setCreatedProduct(null);
+                setProductName('');
+                setDescription('');
+                setPrice('');
+                setQuantity('');
+                setPhotos([]);
+                setPreviews([]);
+              }}
+              className="w-full sm:w-auto km-btn-outline py-3.5 text-base"
             >
-              {isUrdu ? 'مارکیٹ میں دیکھیں' : 'View in Marketplace'}
-            </Link>
+              {isUrdu ? 'مزید فصل پوسٹ کریں' : 'Post Another Produce'}
+            </button>
           </div>
         </div>
       </div>

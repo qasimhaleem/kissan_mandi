@@ -8,7 +8,6 @@ import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 import {
   MapPin,
-  Sprout,
   UserCheck,
   ShoppingCart,
   ShieldCheck,
@@ -231,9 +230,16 @@ function RegisterForm() {
       {/* Form Column */}
       <div className="lg:col-span-7 p-7 sm:p-10">
         <div className="space-y-1.5 mb-6">
-          <div className="w-11 h-11 rounded-xl bg-km-green-700 flex items-center justify-center shadow-km-sm mb-3">
-            <Sprout className="w-5 h-5 text-km-green-200" />
-          </div>
+          <Link href="/" className="inline-block mb-3">
+            <Image
+              src="/logo.png"
+              alt="KissanMandi — Farmers Marketplace"
+              width={185}
+              height={36}
+              className="h-8 w-auto object-contain hover:opacity-90 transition-opacity"
+              priority
+            />
+          </Link>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-km-ink">
             {t('signup')}
           </h1>

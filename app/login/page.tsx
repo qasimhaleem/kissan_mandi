@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
-import { Sprout, CheckCircle2, AlertCircle, ShieldCheck } from 'lucide-react';
+import { CheckCircle2, AlertCircle, ShieldCheck } from 'lucide-react';
 import { API_BASE } from '@/lib/api';
 
 export default function LoginPage() {
@@ -120,9 +120,16 @@ export default function LoginPage() {
         {/* Form Column */}
         <div className="lg:col-span-6 p-7 sm:p-10 lg:p-12 flex flex-col justify-center">
           <div className="space-y-2 mb-7">
-            <div className="w-11 h-11 rounded-xl bg-km-green-700 flex items-center justify-center shadow-km-sm mb-3">
-              <Sprout className="w-5 h-5 text-km-green-200" />
-            </div>
+            <Link href="/" className="inline-block mb-3">
+              <Image
+                src="/logo.png"
+                alt="KissanMandi — Farmers Marketplace"
+                width={185}
+                height={36}
+                className="h-8 w-auto object-contain hover:opacity-90 transition-opacity"
+                priority
+              />
+            </Link>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-km-ink">
               {t('login')}
             </h1>

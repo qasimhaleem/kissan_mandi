@@ -1,57 +1,91 @@
 import type { Metadata } from 'next';
-import {
-  Plus_Jakarta_Sans,
-  Inter,
-  Playfair_Display,
-  Noto_Nastaliq_Urdu,
-  Noto_Naskh_Arabic,
-} from 'next/font/google';
+import localFont from 'next/font/local';
 import './globals.css';
 import { Providers } from './providers';
 import Navbar from '@/components/Navbar';
 import MobileNav from '@/components/MobileNav';
 import Footer from '@/components/Footer';
+import NavigationProgress from '@/components/NavigationProgress';
 
-const plusJakartaSans = Plus_Jakarta_Sans({
-  subsets: ['latin'],
-  weight: ['700', '800'],
-  variable: '--font-heading',
+// Duffel primary English typography: GT America
+const gtAmerica = localFont({
+  src: [
+    {
+      path: '../public/fonts/GT-America-Standard-Regular.woff2',
+      weight: '400',
+      style: 'normal',
+    },
+    {
+      path: '../public/fonts/GT-America-Standard-Medium.woff2',
+      weight: '500',
+      style: 'normal',
+    },
+    {
+      path: '../public/fonts/GT-America-Standard-Bold.woff2',
+      weight: '700',
+      style: 'normal',
+    },
+  ],
+  variable: '--font-gt-america',
   display: 'swap',
 });
 
-const inter = Inter({
-  subsets: ['latin'],
-  weight: ['400', '500', '600'],
-  variable: '--font-body',
-  display: 'swap',
-});
-
-const playfairDisplay = Playfair_Display({
-  subsets: ['latin'],
-  weight: ['700'],
-  style: ['italic'],
-  variable: '--font-accent',
-  display: 'swap',
-});
-
-const notoNastaliqUrdu = Noto_Nastaliq_Urdu({
-  subsets: ['arabic'],
-  weight: ['600', '700'],
-  variable: '--font-urdu-heading',
-  display: 'swap',
-});
-
-const notoNaskhArabic = Noto_Naskh_Arabic({
-  subsets: ['arabic'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-urdu-body',
+// Duffel mono typography: GT America Mono
+const gtAmericaMono = localFont({
+  src: [
+    {
+      path: '../public/fonts/GT-America-Mono-Regular.woff2',
+      weight: '400',
+      style: 'normal',
+    },
+  ],
+  variable: '--font-mono',
   display: 'swap',
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://kissanmandi-tawny.vercel.app'),
   title: 'KissanMandi — Direct Agricultural Marketplace for Pakistan',
   description:
-    'Connect directly with Pakistani farmers and verified commercial buyers. List fresh produce, receive competitive bids, and trade transparently with zero middleman commission.',
+    'Connect directly with Pakistani farmers and verified commercial buyers. List fresh produce, receive competitive bids, and trade transparently with 0% middleman commission.',
+  keywords: [
+    'Pakistan Agriculture',
+    'Kissan Mandi',
+    'Direct Farm Trade',
+    'Basmati Rice',
+    'Chaunsa Mangoes',
+    'Wheat Bidding',
+    'Lahore Mandi Rates',
+    'Punjab Agri Exchange',
+    'Multan Agriculture',
+  ],
+  authors: [{ name: 'KissanMandi Technologies Ltd' }],
+  icons: {
+    icon: [
+      { url: '/icon.svg', type: 'image/svg+xml' },
+      { url: '/icon.png', sizes: '192x192', type: 'image/png' },
+      { url: '/favicon.ico' },
+    ],
+    apple: [
+      { url: '/apple-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
+    shortcut: '/favicon.ico',
+  },
+  openGraph: {
+    title: 'KissanMandi — Pakistan’s Direct Agri-Trading Exchange',
+    description:
+      'Trade farm produce without the middlemen. Transparent real-time auctions, photo-verified harvest batches, and 0% broker deductions.',
+    url: 'https://kissanmandi-tawny.vercel.app',
+    siteName: 'KissanMandi Pakistan',
+    locale: 'en_PK',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'KissanMandi — Pakistan’s Direct Agri-Trading Exchange',
+    description:
+      'Connect directly with Pakistani growers and verified commercial buyers with 0% middleman fees.',
+  },
 };
 
 export default function RootLayout({
@@ -61,12 +95,12 @@ export default function RootLayout({
 }) {
   return (
     <html
-      lang="ur"
-      dir="rtl"
-      className={`${plusJakartaSans.variable} ${inter.variable} ${playfairDisplay.variable} ${notoNastaliqUrdu.variable} ${notoNaskhArabic.variable}`}
+      lang="en"
+      className={`${gtAmerica.variable} ${gtAmericaMono.variable}`}
     >
       <body className="min-h-screen bg-km-cream-100 text-km-ink font-sans antialiased flex flex-col pb-16 sm:pb-0">
         <Providers>
+          <NavigationProgress />
           <Navbar />
           <main className="flex-1 w-full">{children}</main>
           <Footer />
@@ -76,3 +110,4 @@ export default function RootLayout({
     </html>
   );
 }
+
